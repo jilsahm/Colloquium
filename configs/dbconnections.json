@@ -1,0 +1,9 @@
+{
+    "Postgres" : {
+        "user" : "",
+        "host" : "127.0.0.1",
+        "database" : "colloquium",
+        "password" : "1989",
+        "port" : 9855
+    }
+}
