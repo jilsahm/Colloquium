@@ -3,7 +3,7 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  form(method='POST', action='/overview')
+  form(method='POST', action='/auth/login')
     div
       i.fas.fa-user
       input(type='text', name='username')

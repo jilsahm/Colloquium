@@ -16,6 +16,17 @@ async function debug(){
     console.log(bcrypt.compareSync(password, hash));
 }
 
+class Administrator{
+    constructor(id, nickname, password){
+        this.id = id;
+        this.nickname = nickname;
+        this.password = password;
+    }
+    isValid(password){
+        return bcrypt.compareSync(password, this.password);
+    }
+}
+
 const dbApi = {
 
     isValidAdministrator : async function(nickname, password){
@@ -29,9 +40,21 @@ const dbApi = {
                 return bcrypt.compareSync();
             })
             .catch(error => false);
+    },
+
+    fetchAdministrator : async function(nickname){
+        const query = 'SELECT * FROM Administrator WHERE nickname=$1';
+        return pool.query(query, [nickname])
+            .then(result => {
+                if (result.rowCount !== 1){
+                    return undefined;
+                }
+                return new Administrator(result.rows[0].administratorid, result.rows[0].nickname, result.rows[0].password);
+            })
+            .catch(error => undefined);
     }
 
 };
 
-debug();
+//debug();
 module.exports = dbApi;

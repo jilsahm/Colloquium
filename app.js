@@ -3,9 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var overviewRouter = require('./routes/overview');
+var authRouter = require('./routes/auth')
 
 var app = express();
 
@@ -21,6 +23,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/overview', overviewRouter);
+app.use('/auth', authRouter);
+
+// Insert session
+app.use(session({
+  key: 'admin_uid',
+  secret: 'thecolloquium',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+      expires: 600000
+  }
+}));
+
+// Clear session
+app.use((req, res, next) => {
+  if (req.cookies.admin_uid && !req.session.admin) {
+      res.clearCookie('admin_uid');        
+  }
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
