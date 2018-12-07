@@ -1,0 +1,40 @@
+body{
+    margin: 20vh auto auto auto;
+    width: 50vw;
+    background: var(--bgComponent);
+    padding: 8px;
+}
+div{
+    font-size: 1.2rem;
+    display: flex;
+    margin-bottom: 4px;
+    padding: 4px;
+}
+i{
+    border-left: 6px solid var(--bgPrimary);
+    text-align: center;
+    color: var(--fgHeader);
+    flex: 1;
+    font-size: inherit;
+}
+i, input{
+    padding: 6px;
+}
+input{
+    border: none;
+    flex: 9;
+    font-size: inherit;
+}
+input[type='text'], input[type='password']{
+    color: inherit;
+    background: var(--bgPrimary);
+}
+input[type='submit']{
+    color: var(--fgHeader);
+    background: transparent;
+    cursor: pointer;
+}
+input[type='submit']:hover{
+    background: var(--fgHeader);
+    color: var(--bgComponent);
+}

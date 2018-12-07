@@ -1,0 +1,46 @@
+#mainwrapper{
+    display: flex;
+}
+nav{
+    flex: 3;
+    background: var(--bgComponent);
+}
+main{
+    flex: 8;
+    background: var(--bgPrimary);
+}
+nav, main{
+    height: 100vh;
+}
+ul{
+    margin: auto;
+    padding: 0;
+}
+li{
+    display: block;
+    font-size: 1.2rem;
+    width: 80%;
+    margin: auto;
+    padding: 8px;
+}
+li:hover{
+    background: var(--fgHeader);
+    color: var(--bgComponent);
+    cursor: pointer;
+}
+table{
+    background: var(--bgComponent);
+    border: 0;
+    border-collapse: collapse;
+    margin: auto;
+    width: 98%;
+}
+th, td{
+    padding: 8px;
+}
+th{
+    border-bottom: 4px solid var(--fgHeader);
+}
+td{
+    text-align: center;
+}

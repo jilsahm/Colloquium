@@ -1,14 +1,18 @@
 extends layout
 
+block extras
+  link(rel='stylesheet', href='/stylesheets/index.css')
+
 block content
-  h1= title
-  p Welcome to #{title}
+  h2 Welcome to the Colloquium
   form(method='POST', action='/auth/login')
     div
       i.fas.fa-user
-      input(type='text', name='username')
+      input(type='text', name='username', placeholder='Username')
     div
       i.fas.fa-key
-      input(type='password', name='password')
+      input(type='password', name='password', placeholder='Password')
     div
       input(type='submit', value='Login')
+  if error
+    p= error

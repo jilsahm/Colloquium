@@ -21,10 +21,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/overview', overviewRouter);
-app.use('/auth', authRouter);
-
 // Insert session
 app.use(session({
   key: 'admin_uid',
@@ -35,6 +31,10 @@ app.use(session({
       expires: 600000
   }
 }));
+
+app.use('/', indexRouter);
+app.use('/overview', overviewRouter);
+app.use('/auth', authRouter);
 
 // Clear session
 app.use((req, res, next) => {

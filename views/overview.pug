@@ -1,0 +1,31 @@
+extends layout
+
+block extras
+    link(rel='stylesheet', href='/stylesheets/overview.css')
+
+block content
+    div#mainwrapper
+        nav
+            h2 Colloquium
+            ul
+                li New Competitor
+                li Start Session
+                li 
+                    a(href="/auth/logout") Logout
+        main
+            h2 Competitors
+            table
+                tr
+                    th Surename
+                    th Lastname
+                    th Number of Sessions
+                    th
+                if competitors
+                    each competitor in competitors
+                        tr
+                            td= competitor.surename
+                            td= competitor.lastname
+                            td= competitor.numberOfSessions
+                            td
+                                i.fas.fa-pencil-alt
+                                i.fas.fa-trash-alt

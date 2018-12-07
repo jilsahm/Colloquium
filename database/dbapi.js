@@ -9,7 +9,7 @@ async function debug(){
         .then(result => console.log(result.rows[0]))
         .catch(error => console.log(error));
      
-    var password = "Test";
+    var password = "test";
     var salt = bcrypt.genSaltSync(12);
     var hash = bcrypt.hashSync(password, salt);
     console.log(hash);
@@ -49,7 +49,7 @@ const dbApi = {
                 if (result.rowCount !== 1){
                     return undefined;
                 }
-                return new Administrator(result.rows[0].administratorid, result.rows[0].nickname, result.rows[0].password);
+                return new Administrator(result.rows[0].administratorid, result.rows[0].nickname, result.rows[0].passwordhash);
             })
             .catch(error => undefined);
     }
