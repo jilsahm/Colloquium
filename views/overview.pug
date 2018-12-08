@@ -18,14 +18,28 @@ block content
                 tr
                     th Surename
                     th Lastname
-                    th Number of Sessions
+                    th Sessions
                     th
                 if competitors
                     each competitor in competitors
                         tr
                             td= competitor.surename
                             td= competitor.lastname
-                            td= competitor.numberOfSessions
+                            //td= competitor.numberOfSessions
+                            td TODO
                             td
                                 i.fas.fa-pencil-alt
                                 i.fas.fa-trash-alt
+            div#formular                    
+                form(action="/overview", method="PUT")
+                    input.hidden(type="submit")
+                    input.hidden(type="number", name="competitorid")
+                    div
+                        label(for="surename") Surename
+                        input(id="surename", type="text", name="surename")
+                    div
+                        label(for="lastname") Lastname
+                        input(id="lastname", type="text", name="lastname")
+                div.buttongroup
+                    i.fas.fa-check-circle#formOk                    
+                    i.fas.fa-times-circle#formCancel

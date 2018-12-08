@@ -13,8 +13,8 @@ const testData = {
   ]
 }
 
-router.get('/', sessionChecker, function(req, res, next) {
-  res.render('overview', testData);
+router.get('/', sessionChecker, async function(req, res, next) {
+  res.render('overview', {competitors : await dbApi.fetchAllCompetitors()});
 });
 
 module.exports = router;

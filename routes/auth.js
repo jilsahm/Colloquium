@@ -4,7 +4,6 @@ var dbApi = require('../database/dbapi.js');
 var sessionChecker = require('../modules/session.js');
 
 router.post('/login', async function(req, res, next) {
-    console.log(req.session);
     const nickname = req.body.username;
     const password = req.body.password;
 
@@ -13,6 +12,7 @@ router.post('/login', async function(req, res, next) {
         res.redirect('/');    
     } else {
         var admin = await dbApi.fetchAdministrator(nickname);
+        console.log(`LOOK HERE!!! ${admin}`)
         if (admin == undefined || !admin.isValid(password)){
             res.render('index', {error : "Something went wrong..."});
         } else {
