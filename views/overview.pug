@@ -24,23 +24,24 @@ block content
                 if competitors
                     each competitor in competitors
                         tr
-                            td= competitor.surename
-                            td= competitor.lastname
+                            td(id=`competitor_${competitor.id}_surename`)= competitor.surename
+                            td(id=`competitor_${competitor.id}_lastname`)= competitor.lastname
                             //td= competitor.numberOfSessions
                             td TODO
                             td
                                 i.fas.fa-pencil-alt.showForm(value=competitor.id)
-                                i.fas.fa-trash-alt
+                                i.fas.fa-trash-alt.deleteCompetitor(value=competitor.id)
             div#formular                    
-                form(action="/overview", method="PUT")
-                    input.hidden(type="submit")
-                    input.hidden(type="number", name="competitorid")
+                form(action="/overview", method="POST")
+                    input.hidden(id='input_send',type="submit")
+                    input.hidden(id='input_id', type="number", name="competitorid", value='-1')
                     div
                         label(for="surename") Surename
-                        input(id="surename", type="text", name="surename")
+                        input(id="surename", type="text", name="surename", value='')
                     div
                         label(for="lastname") Lastname
-                        input(id="lastname", type="text", name="lastname")
+                        input(id="lastname", type="text", name="lastname", value='')
                 div.buttongroup
                     i.fas.fa-check-circle#formOk                    
                     i.fas.fa-times-circle#formCancel
+                p#info

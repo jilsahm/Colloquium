@@ -133,19 +133,27 @@ const dbApi = {
         return competitors;
     },
 
-    createCompetitor : function(competitor){
+    createCompetitor : async function(competitor, surename, lastname){
+        if (surename && lastname){
+            competitor = new Competitor(competitor, surename, lastname);
+        }
+
         const query = competitor.create();
         pool.query(query.sql, query.params)
             .catch(error => console.log(error));
     },
 
-    updateCompetitor : function(competitor){
+    updateCompetitor : async function(competitor, surename, lastname){
+        if (surename && lastname){
+            competitor = new Competitor(competitor, surename, lastname);
+        }
+
         const query = competitor.update();
         pool.query(query.sql, query.params)
             .catch(error => console.log(error));
     },
 
-    deleteCompetitor : function(competitor){
+    deleteCompetitor : async function(competitor){
         const query = competitor.delete();
         pool.query(query.sql, query.params)
             .catch(error => console.log(error));
