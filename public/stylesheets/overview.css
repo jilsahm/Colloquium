@@ -1,5 +1,22 @@
+#formular{
+    display: none;
+    position: sticky;
+    bottom: 0;
+    margin: 1% auto;
+    width: 98%;
+    background: var(--bgComponent);
+}
 #mainwrapper{
     display: flex;
+}
+.buttongroup{
+    display: flex;
+}
+.buttongroup > i{
+    flex: 1;
+}
+.hidden{
+    display: none;
 }
 nav{
     flex: 3;
@@ -43,4 +60,21 @@ th{
 }
 td{
     text-align: center;
+}
+i{
+    font-size: 1.3rem;
+}
+i:hover{
+    background: var(--fgHeader);
+    color: var(--bgComponent);
+    cursor: pointer;
+}
+form > div{
+    display: flex;
+}
+label, input{
+    margin: 8px 8px 0 8px;
+}
+input{
+    flex: 9;
 }

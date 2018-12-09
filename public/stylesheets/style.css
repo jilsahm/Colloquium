@@ -27,3 +27,27 @@ a{
   color: inherit;
   text-decoration: none;
 }
+input{
+  border: none;
+  font-size: inherit;
+}
+input[type='text'], input[type='password']{
+  color: inherit;
+  background: var(--bgPrimary);
+}
+input[type='submit']{
+  color: var(--fgHeader);
+  background: transparent;
+  cursor: pointer;
+}
+input[type='submit']:hover{
+  background: var(--fgHeader);
+  color: var(--bgComponent);
+}
+i{
+  text-align: center;
+  font-size: inherit;
+}
+i, input{
+  padding: 6px;
+}

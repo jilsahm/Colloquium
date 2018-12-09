@@ -2,13 +2,14 @@ extends layout
 
 block extras
     link(rel='stylesheet', href='/stylesheets/overview.css')
+    script(src='/javascripts/overview.js')
 
 block content
     div#mainwrapper
         nav
             h2 Colloquium
             ul
-                li New Competitor
+                li.showForm(value='-1') New Competitor
                 li Start Session
                 li 
                     a(href="/auth/logout") Logout
@@ -28,7 +29,7 @@ block content
                             //td= competitor.numberOfSessions
                             td TODO
                             td
-                                i.fas.fa-pencil-alt
+                                i.fas.fa-pencil-alt.showForm(value=competitor.id)
                                 i.fas.fa-trash-alt
             div#formular                    
                 form(action="/overview", method="PUT")
