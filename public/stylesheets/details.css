@@ -1,0 +1,39 @@
+#mainwrapper{
+    display: flex;
+}
+.buttongroup{
+    display: flex;
+}
+.buttongroup > i{
+    flex: 1;
+}
+.hidden{
+    display: none;
+}
+nav{
+    flex: 3;
+    background: var(--bgComponent);
+}
+main{
+    flex: 8;
+    background: var(--bgPrimary);
+}
+nav, main{
+    height: 100vh;
+}
+ul{
+    margin: auto;
+    padding: 0;
+}
+li{
+    display: block;
+    font-size: 1.2rem;
+    width: 80%;
+    margin: auto;
+    padding: 8px;
+}
+li:hover{
+    background: var(--fgHeader);
+    color: var(--bgComponent);
+    cursor: pointer;
+}

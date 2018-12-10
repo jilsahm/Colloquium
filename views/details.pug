@@ -1,0 +1,17 @@
+extends layout
+
+block extras
+    link(rel="stylesheet", href="/stylesheets/details.css")
+
+block content
+    div#mainwrapper
+        nav
+            h2=`${competitor.surename} ${competitor.lastname}`
+            ul
+                li Start Session
+                li 
+                    a(href="/overview") To Overview
+                li 
+                    a(href="/auth/logout") Logout
+        main
+            h2 Details

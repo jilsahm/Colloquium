@@ -7,7 +7,8 @@ var session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var overviewRouter = require('./routes/overview');
-var authRouter = require('./routes/auth')
+var authRouter = require('./routes/auth');
+var detailsRouter = require('./routes/details');
 
 var app = express();
 
@@ -35,6 +36,7 @@ app.use(session({
 app.use('/', indexRouter);
 app.use('/overview', overviewRouter);
 app.use('/auth', authRouter);
+app.use('/details', authRouter);
 
 // Clear session
 app.use((req, res, next) => {

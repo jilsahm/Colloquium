@@ -119,6 +119,18 @@ const dbApi = {
             .catch(error => console.log(error));
     },
 
+    fetchOneCompetitor : async function(competitorId){
+        const query = "SELECT * FROM Competitor WHERE CompetitorId=$1";
+        return pool.query(query, [competitorId])
+            .then(result => {
+                if (result.rowCount !== 1){
+                    return undefined;
+                }
+                return factoryCompetitor(result.rows[0]);
+            })
+            .catch(error => console.log(error));
+    },
+
     fetchAllCompetitors : async function(){
         const query = 'SELECT * FROM Competitor';
         var competitors = [];
@@ -153,10 +165,16 @@ const dbApi = {
             .catch(error => console.log(error));
     },
 
-    deleteCompetitor : async function(competitor){
-        const query = competitor.delete();
-        pool.query(query.sql, query.params)
-            .catch(error => console.log(error));
+    deleteCompetitor : async function(competitor){        
+        if (competitor.delete){
+            const query = competitor.delete();
+            pool.query(query.sql, query.params)
+                .catch(error => console.log(error));
+        } else {
+            const query = `DELETE FROM Competitor WHERE CompetitorID=$1`;
+            pool.query(query, [competitor])
+                .catch(error => console.log(error));
+        }         
     }
 
 };

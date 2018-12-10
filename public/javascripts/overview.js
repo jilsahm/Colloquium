@@ -13,15 +13,28 @@ function registerButtons(){
     document.getElementById('formOk').onclick = sendData;
     document.getElementById('formCancel').onclick = hideForm;
 
+    document.querySelectorAll('*.startSession').forEach(element => {
+        element.onclick = () => {
+            showDetails(element.attributes.value.value);
+        };
+    });
+
     document.querySelectorAll('*.showForm').forEach(element => {
         element.onclick = () => {
             showForm(element.attributes.value.value);
-        }
+        };
     });
+
     document.querySelectorAll('*.deleteCompetitor').forEach(element => {
         element.onclick = () => {
             deleteCompetitor(element.attributes.value.value);
-        }
+        };
+    });
+
+    document.querySelectorAll('tr:not(:first-child)').forEach(element => {
+        element.onclick = () => {
+            console.log(element);
+        };
     });
 }
 
@@ -34,6 +47,12 @@ function sendData(){
         document.getElementById('input_send').click();
     } else {
         document.getElementById('info').innerHTML = 'Name is not valid...';
+    }
+}
+
+function showDetails(competitorId){
+    if (Pattern.ID.test(competitorId) && competitorId > 0){
+        window.open(`./details?competitorid=${competitorId}`, '_self');
     }
 }
 
@@ -57,5 +76,10 @@ function showForm(competitorId){
 }
 
 function deleteCompetitor(competitorId){
-    
+    var request = new XMLHttpRequest();
+    request.open('DELETE', `./overview?competitorid=${competitorId}`, false);
+    request.onload = () => {
+        window.open('./overview', '_self');
+    }
+    request.send(null);
 }

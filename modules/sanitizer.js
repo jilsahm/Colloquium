@@ -7,6 +7,10 @@ const Validator = {
 
     isValidCompetitor(id, surename, lastname){
         return Pattern.ID.test(id) && Pattern.NAME.test(surename) && Pattern.NAME.test(lastname);
+    },
+
+    isValidId(id){
+        return Pattern.ID.test(id);
     }
 
 };

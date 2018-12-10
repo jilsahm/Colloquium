@@ -3,6 +3,7 @@
 :root{
   --bgComponent: #000;
   --bgPrimary: #242424;
+  --bgAccent: #702020;
   --fgHeader: #bf0000;
   --fgPrimary: #d8d8d8;
 }

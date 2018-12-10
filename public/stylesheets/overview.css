@@ -52,6 +52,9 @@ table{
     margin: auto;
     width: 98%;
 }
+tr:not(:first-child):hover{
+    background: var(--bgAccent);
+}
 th, td{
     padding: 8px;
 }
