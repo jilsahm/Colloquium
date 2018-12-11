@@ -8,11 +8,12 @@ router.post('/login', async function(req, res, next) {
     const password = req.body.password;
 
     if (nickname == undefined || password == undefined){
-        console.log('Redirecting to index');
+        //console.log('Redirecting to index');
         res.redirect('/');    
     } else {
-        var admin = await dbApi.fetchAdministrator(nickname);
-        console.log(`LOOK HERE!!! ${admin}`)
+        //var admin = await dbApi.fetchAdministrator(nickname);
+        var admin = await dbApi.fetchOne('administrator', nickname);
+        //console.log(`LOOK HERE!!! ${admin}`)
         if (admin == undefined || !admin.isValid(password)){
             res.render('index', {error : "Something went wrong..."});
         } else {

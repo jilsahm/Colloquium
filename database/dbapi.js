@@ -87,19 +87,121 @@ function factoryCompetitor(data){
     return new Competitor(data.competitorid, data.surename, data.lastname);
 }
 
+class Topic{
+    constructor(id, title, competitorId){
+        this.id = id;
+        this.title = title;
+        this.competitorId = competitorId;
+    }
+    create(){
+        return new Query(
+            `INSERT INTO Topic(Title, CompetitorID) VALUES ($1, $2)`,
+            [this.title, this.competitorId]
+        );
+    }
+    update(){
+        return new Query(
+            `UPDATE Topic SET Title=$1, CompetitorID=$2 WHERE TopicID=$3`,
+            [this.title, this.competitorId, this.id]
+        );
+    }
+    delete(){
+        return new Query(
+            `DELETE FROM Topic WHERE TopicID=$1`,
+            [this.id]
+        );
+    }
+}
+function factoryTopic(data){
+    return new Topic(data.topicid, data.title, data.competitorid);
+}
+
 const dbApi = {
 
-    fetchAdministrator : async function(nickname){
-        const query = 'SELECT * FROM Administrator WHERE nickname=$1';
-        return pool.query(query, [nickname])
-            .then(result => {
-                if (result.rowCount !== 1){
-                    return undefined;
-                }
-                return factoryAdministrator(result.rows[0]);
-            })
-            .catch(error => console.log(error));
+    // Fetch methods
+
+    /**
+     * Fetchs one specific dataset from the database. It will automaticly transformed into an object.
+     * @param {*} type A String with the name of the desired object. 
+     * Possible types: "administrator", "competitor", "topic"
+     * @param {*} specifier The ID of the desired Object
+     * @returns An Object of the desired type or undefined if no dataset was found.
+     */
+    fetchOne: async function(type, specifier) {
+        var object = undefined;
+        var query = undefined;
+        var factory = undefined;
+
+        switch (type){
+            case 'administrator': 
+                query = 'SELECT * FROM Administrator WHERE nickname=$1';
+                factory = factoryAdministrator;
+                break;
+            case 'competitor':
+                query = 'SELECT * FROM Competitor WHERE CompetitorID=$1';
+                factory = factoryCompetitor;
+                break;
+            case 'topic':
+                query = 'SELECT * FROM Topic WHERE TopicID=$1';
+                factory = factoryAdministrator;
+                break;
+        }
+        if (query){
+            await pool.query(query, [specifier])
+                .then(result => {
+                    if (result.rowCount === 1){
+                        object = factory(result.rows[0]);
+                    }
+                })
+                .catch(error => console.log(error));
+        }
+        return object;
     },
+
+    /**
+     * Fetchs all datasets from the database. It will automaticly transform then into objects.
+     * @param {*} type A String with the name of the desired objects. 
+     * Possible types: "administrator", "competitor", "topic"
+     * @return An array of objects of the desired type. If no datasets are fetched the array is empty.
+     */
+    fetchAll: async function(type, specifier) {
+        var objects = [];
+        var query = undefined;
+        var factory = undefined;
+
+        switch (type){
+            case 'administrator': 
+                query = 'SELECT * FROM Administrator';
+                factory = factoryAdministrator;
+                break;
+            case 'competitor':
+                query = 'SELECT * FROM Competitor';
+                factory = factoryCompetitor;
+                break;
+            case 'topic':
+                query = 'SELECT * FROM Topic WHERE CompetitorID=$1';
+                factory = factoryAdministrator;
+                break;
+        }
+        if (query){
+            var params = [];
+            if (specifier){
+                params.push(specifier);
+            }
+            await pool.query(query, params)
+                .then(result => {
+                    if (result.rowCount > 0){
+                        for (let row of result.rows){
+                            objects.push(factory(row));
+                        }                        
+                    }
+                })
+                .catch(error => console.log(error));
+        }
+        return objects;
+    },
+
+    // Administrator CRUD
 
     createAdministrator : function(administrator){
         const query = administrator.create();
@@ -118,6 +220,8 @@ const dbApi = {
         pool.query(query.sql, query.params)
             .catch(error => console.log(error));
     },
+
+    // Competitor CRUD
 
     fetchOneCompetitor : async function(competitorId){
         const query = "SELECT * FROM Competitor WHERE CompetitorId=$1";
@@ -173,6 +277,40 @@ const dbApi = {
         } else {
             const query = `DELETE FROM Competitor WHERE CompetitorID=$1`;
             pool.query(query, [competitor])
+                .catch(error => console.log(error));
+        }         
+    },
+
+    // Topic CRUD
+
+    createTopic : async function(topic, title, competitorId){
+        if (title && competitorId){
+            topic = new Topic(topic, title, competitorId);
+        }
+
+        const query = topic.create();
+        pool.query(query.sql, query.params)
+            .catch(error => console.log(error));
+    },
+
+    updateTopic : async function(topic, title, competitorId){
+        if (title && competitorId){
+            topic = new Topic(topic, title, competitorId);
+        }
+
+        const query = topic.update();
+        pool.query(query.sql, query.params)
+            .catch(error => console.log(error));
+    },
+
+    deleteTopic : async function(topic){        
+        if (topic.delete){
+            const query = topic.delete();
+            pool.query(query.sql, query.params)
+                .catch(error => console.log(error));
+        } else {
+            const query = `DELETE FROM Topic WHERE TopicID=$1`;
+            pool.query(query, [topic])
                 .catch(error => console.log(error));
         }         
     }

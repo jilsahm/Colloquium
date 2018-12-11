@@ -4,21 +4,25 @@
   --bgComponent: #000;
   --bgPrimary: #242424;
   --bgAccent: #702020;
+  --bgSelected: #501010;
   --fgHeader: #bf0000;
   --fgPrimary: #d8d8d8;
+
+  --border: 6px solid var(--bgPrimary);
 }
 
+.selected{
+  background: var(--bgSelected);
+}
 html{
   background: var(--bgPrimary);
   color: var(--fgPrimary);
 }
-
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
 }
-
 h1, h2, h3, h4, h5, h6{
   text-align: center;
   color: var(--fgHeader);
@@ -51,4 +55,21 @@ i{
 }
 i, input{
   padding: 6px;
+}
+ul{
+  margin: auto;
+  padding: 0;
+}
+li{
+  border-left: var(--border);
+  display: block;
+  font-size: 1.2rem;
+  width: 80%;
+  margin: auto;
+  padding: 8px;
+}
+li:hover{
+  background: var(--fgHeader);
+  color: var(--bgComponent);
+  cursor: pointer;
 }

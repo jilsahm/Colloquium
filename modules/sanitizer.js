@@ -1,6 +1,7 @@
 const Pattern = {
     ID : /^-?[1-9][0-9]{0,7}$/,
-    NAME : /^\w{0,64}$/
+    NAME : /^\w{0,64}$/,
+    TITLE : /^\w{0,128}$/
 };
 
 const Validator = {
@@ -11,6 +12,10 @@ const Validator = {
 
     isValidId(id){
         return Pattern.ID.test(id);
+    },
+
+    isValidTopic(topicId, title, competitorId){
+        return Pattern.ID.test(topicId) && Pattern.TITLE.test(title) && Pattern.ID.test(competitorId);
     }
 
 };

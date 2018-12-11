@@ -1,17 +1,42 @@
 extends layout
 
 block extras
-    link(rel="stylesheet", href="/stylesheets/details.css")
+    link(rel="stylesheet", href="/stylesheets/overview.css")
+    script(src="/javascripts/details.js")
 
 block content
     div#mainwrapper
         nav
             h2=`${competitor.surename} ${competitor.lastname}`
             ul
-                li Start Session
+                li.showForm(value="-1") Create Topic
+                li Show Topic
                 li 
                     a(href="/overview") To Overview
                 li 
                     a(href="/auth/logout") Logout
         main
-            h2 Details
+            h2 Topics
+            table
+                tr
+                    th Topic
+                if topics
+                    each topic in topics
+                        tr
+                            td= topic.title
+                            td
+                                i.fas.fa-eye.showSessions(value=topic.id)
+                                i.fas.fa-pencil-alt.showForm(value=topic.id)
+                                i.fas.fa-trash-alt.deleteTopic(value=topic.id)
+            div#formular                    
+                form(action="/details", method="POST")
+                    input.hidden(id="input_send",type="submit")
+                    input.hidden(id="input_id", type="number", name="topicid", value='-1')
+                    input.hidden(id="competitor_id", type="number", value=competitor.id)
+                    div
+                        label(for="title") Title
+                        input(id="title", type="text", name="title", value='')
+                div.buttongroup
+                    i.fas.fa-check-circle#formOk                    
+                    i.fas.fa-times-circle#formCancel
+                p#info

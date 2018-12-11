@@ -18,19 +18,40 @@ CREATE TABLE IF NOT EXISTS SessionSize (
     PRIMARY KEY (SessionSizeID)
 );
 
+CREATE TABLE IF NOT EXISTS Topic (
+    TopicID SERIAL,
+    Title VARCHAR(128),
+    CompetitorID INTEGER,
+    SessionSizeID INTEGER,
+    PRIMARY KEY (TopicID),
+    FOREIGN KEY (CompetitorID) REFERENCES Competitor(CompetitorID),
+    FOREIGN KEY (SessionSizeID) REFERENCES SessionSize(SessionSizeID)
+);
+
 CREATE TABLE IF NOT EXISTS Session (
     SessionID SERIAL,
     Starttime BIGINT,
     Endtime BIGINT,
-    CompetitorID INTEGER,
-    SessionSizeID INTEGER,
+    Duration BIGINT,
+    TopicID INTEGER,    
     PRIMARY KEY (SessionID),
-    FOREIGN KEY (CompetitorID) REFERENCES Competitor(CompetitorID),
-    FOREIGN KEY (SessionSizeID) REFERENCES SessionSize(SessionSizeID)
+    FOREIGN KEY (TopicID) REFERENCES Topic(TopicID)    
 );
 
 CREATE TABLE IF NOT EXISTS Question (
     QuestionID SERIAL,
     Content TEXT,
-    PRIMARY KEY (QuestionID)
+    TimesAsked INTEGER,
+    AnswerRating INTEGER,
+    TopicID INTEGER,
+    PRIMARY KEY (QuestionID),
+    FOREIGN KEY (TopicID) REFERENCES Topic(TopicID)
+);
+
+CREATE TABLE IF NOT EXISTS Critique (
+    CritiqueID SERIAL,
+    Content VARCHAR(256),
+    SessionID INTEGER,
+    PRIMARY KEY (CritiqueID),
+    FOREIGN KEY (SessionID) REFERENCES Session(SessionID)
 );

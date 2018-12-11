@@ -36,7 +36,7 @@ app.use(session({
 app.use('/', indexRouter);
 app.use('/overview', overviewRouter);
 app.use('/auth', authRouter);
-app.use('/details', authRouter);
+app.use('/details', detailsRouter);
 
 // Clear session
 app.use((req, res, next) => {

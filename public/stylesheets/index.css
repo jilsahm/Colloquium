@@ -11,7 +11,7 @@ div{
     padding: 4px;
 }
 i{
-    border-left: 6px solid var(--bgPrimary);    
+    border-left: var(--border);    
     color: var(--fgHeader);
     flex: 1;    
 }

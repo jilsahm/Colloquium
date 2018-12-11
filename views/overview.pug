@@ -10,7 +10,7 @@ block content
             h2 Colloquium
             ul
                 li.showForm(value='-1') New Competitor
-                li.startSession(value='-1') Show Details
+                li.showDetails(value='-1') Show Details
                 li 
                     a(href="/auth/logout") Logout
         main
@@ -19,16 +19,17 @@ block content
                 tr
                     th Surename
                     th Lastname
-                    th Sessions
+                    th TODO
                     th
                 if competitors
                     each competitor in competitors
-                        tr
+                        tr(value=competitor.id)
                             td(id=`competitor_${competitor.id}_surename`)= competitor.surename
                             td(id=`competitor_${competitor.id}_lastname`)= competitor.lastname
                             //td= competitor.numberOfSessions
                             td TODO
                             td
+                                i.fas.fa-eye.showDetails(value=competitor.id)
                                 i.fas.fa-pencil-alt.showForm(value=competitor.id)
                                 i.fas.fa-trash-alt.deleteCompetitor(value=competitor.id)
             div#formular                    

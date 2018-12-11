@@ -29,22 +29,6 @@ main{
 nav, main{
     height: 100vh;
 }
-ul{
-    margin: auto;
-    padding: 0;
-}
-li{
-    display: block;
-    font-size: 1.2rem;
-    width: 80%;
-    margin: auto;
-    padding: 8px;
-}
-li:hover{
-    background: var(--fgHeader);
-    color: var(--bgComponent);
-    cursor: pointer;
-}
 table{
     background: var(--bgComponent);
     border: 0;
@@ -54,6 +38,7 @@ table{
 }
 tr:not(:first-child):hover{
     background: var(--bgAccent);
+    cursor: pointer;
 }
 th, td{
     padding: 8px;

@@ -5,7 +5,7 @@ var sessionChecker = require('../modules/session.js');
 var validator = require('../modules/sanitizer.js');
 
 router.get('/', sessionChecker, async function(req, res, next) {
-  res.render('overview', {competitors : await dbApi.fetchAllCompetitors()});
+  res.render('overview', {competitors : await dbApi.fetchAll('competitor')});
 });
 
 router.post('/', sessionChecker, async function(req, res, next) {
@@ -21,7 +21,7 @@ router.post('/', sessionChecker, async function(req, res, next) {
     }
   }
 
-  res.render('overview', {competitors : await dbApi.fetchAllCompetitors()});
+  res.render('overview', {competitors : await dbApi.fetchAll('competitor')});
 });
 
 router.delete('/', sessionChecker, async function(req, res, next) {

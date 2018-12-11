@@ -13,12 +13,12 @@ function registerButtons(){
     document.getElementById('formOk').onclick = sendData;
     document.getElementById('formCancel').onclick = hideForm;
 
-    document.querySelectorAll('*.startSession').forEach(element => {
+    document.querySelectorAll('*.showDetails').forEach(element => {
         element.onclick = () => {
             showDetails(element.attributes.value.value);
         };
     });
-
+    
     document.querySelectorAll('*.showForm').forEach(element => {
         element.onclick = () => {
             showForm(element.attributes.value.value);
@@ -33,8 +33,24 @@ function registerButtons(){
 
     document.querySelectorAll('tr:not(:first-child)').forEach(element => {
         element.onclick = () => {
-            console.log(element);
+            element.classList.add('selected');
+            document.querySelectorAll('tr:not(:first-child)').forEach(node => {
+                if (element !== node){
+                    node.classList.remove('selected');
+                }
+            });
+            document.querySelectorAll('*.startSession').forEach(node => {
+                node.value = element.attributes.value.value;
+            });
         };
+    });
+}
+
+function setCallbackForAll(identifier, callback, params){
+    document.querySelectorAll(identifier).forEach(element => {
+        element.onclick = () => {
+            callback(...params);
+        }
     });
 }
 
