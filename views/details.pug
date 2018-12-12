@@ -20,10 +20,13 @@ block content
             table
                 tr
                     th Topic
+                    th Session Size (Minutes)
+                    th
                 if topics
                     each topic in topics
                         tr
                             td= topic.title
+                            td= topic.sessionSize
                             td
                                 i.fas.fa-eye.showSessions(value=topic.id)
                                 i.fas.fa-pencil-alt.showForm(value=topic.id)
@@ -32,10 +35,16 @@ block content
                 form(action="/details", method="POST")
                     input.hidden(id="input_send",type="submit")
                     input.hidden(id="input_id", type="number", name="topicid", value='-1')
-                    input.hidden(id="competitor_id", type="number", value=competitor.id)
+                    input.hidden(id="competitor_id", type="number", name="competitorid", value=competitor.id)
                     div
                         label(for="title") Title
                         input(id="title", type="text", name="title", value='')
+                    div
+                        label(for="sessionsize") Session Size (Minutes)
+                        select(id="sessionsize", name="sessionsize")
+                            if sessionSizes
+                                each sessionSize in sessionSizes
+                                    option(value=sessionSize.id)= sessionSize.minutes
                 div.buttongroup
                     i.fas.fa-check-circle#formOk                    
                     i.fas.fa-times-circle#formCancel

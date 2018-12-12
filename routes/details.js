@@ -8,7 +8,15 @@ router.get('/', /*sessionChecker,*/ async function(req, res, next) {
     const competitorId = req.query.competitorid;
 
     if (competitorId && sanitizer.isValidId(competitorId) && competitorId > 0){
-        res.render('details', {competitor : await dbApi.fetchOne('competitor', competitorId)});
+        var competitor = await dbApi.fetchOne('competitor', competitorId);
+        var topics = await dbApi.fetchAll('topic', competitorId);
+        var sessionSizes = await dbApi.fetchAll('sessionsize');
+
+        res.render('details', {
+            competitor : competitor,
+            topics : topics,
+            sessionSizes : sessionSizes
+        });
     } else {
         res.redirect('overview');
     }
@@ -18,16 +26,25 @@ router.post('/', /*sessionChecker,*/ async function(req, res, next) {
     const topicId = req.body.topicid;
     const competitorId = req.body.competitorid;
     const title = req.body.title;
+    const sessionSize = req.body.sessionsize;
   
-    if (sanitizer.isValidTopic(topicId, title, competitorId)){
-        if (id == -1){
-            await dbApi.createTopic(topicId, title, competitorId);
+    if (sanitizer.isValidTopic(topicId, title, competitorId, sessionSize)){
+        if (topicId == -1){
+            await dbApi.create("topic", [topicId, title, competitorId, sessionSize]);
         } else {
-            await dbApi.updateTopic(topicId, title, competitorId);
+            await dbApi.updateTopic(topicId, title, competitorId, sessionSize);
         }
     }
-  
-    res.render('details', {competitor : await dbApi.fetchOne('competitor', competitorId), topics : await dbApi.fetchAll('topic', competitorId)});
+
+    var competitor = await dbApi.fetchOne('competitor', competitorId);
+    var topics = await dbApi.fetchAll('topic', competitorId);
+    var sessionSizes = await dbApi.fetchAll('sessionsize');
+
+    res.render('details', {
+        competitor : competitor,
+        topics : topics,
+        sessionSizes : sessionSizes
+    });
   });
   
 router.delete('/', /*sessionChecker,*/ async function(req, res, next) {

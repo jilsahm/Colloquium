@@ -1,7 +1,8 @@
 const Pattern = {
     ID : /^-?[1-9][0-9]{0,7}$/,
     NAME : /^\w{0,64}$/,
-    TITLE : /^\w{0,128}$/
+    TITLE : /^(\w| ){0,128}$/,
+    SESSIONSIZE : /^[1-9][0-9]{0,3}$/
 };
 
 const Validator = {

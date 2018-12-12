@@ -88,21 +88,23 @@ function factoryCompetitor(data){
 }
 
 class Topic{
-    constructor(id, title, competitorId){
+    constructor(id, title, competitorId, sessionSize){
         this.id = id;
         this.title = title;
         this.competitorId = competitorId;
+        this.sessionSize = sessionSize;
+        console.log(this);
     }
     create(){
         return new Query(
-            `INSERT INTO Topic(Title, CompetitorID) VALUES ($1, $2)`,
-            [this.title, this.competitorId]
+            `INSERT INTO Topic(Title, CompetitorID, SessionSizeID) VALUES ($1, $2, $3)`,
+            [this.title, this.competitorId, this.sessionSize]
         );
     }
     update(){
         return new Query(
-            `UPDATE Topic SET Title=$1, CompetitorID=$2 WHERE TopicID=$3`,
-            [this.title, this.competitorId, this.id]
+            `UPDATE Topic SET Title=$1, CompetitorID=$2, SessionSizeID=$3 WHERE TopicID=$4`,
+            [this.title, this.competitorId, this.sessionSize, this.id]
         );
     }
     delete(){
@@ -113,7 +115,35 @@ class Topic{
     }
 }
 function factoryTopic(data){
-    return new Topic(data.topicid, data.title, data.competitorid);
+    return new Topic(data.topicid, data.title, data.competitorid, data.sessionsizeid);
+}
+
+class SessionSize{
+    constructor(id, minutes){
+        this.id = id;
+        this.minutes = minutes;
+    }
+    create(){
+        return new Query(
+            `INSERT INTO SessionSize(Minutes) VALUES ($1)`,
+            [this.minutes]
+        );
+    }
+    update(){
+        return new Query(
+            `UPDATE SessionSize SET Minutes=$1 WHERE SessionSizeID=$2`,
+            [this.minutes, this.id]
+        );
+    }
+    delete(){
+        return new Query(
+            `DELETE FROM SessionSize WHERE SessionSizeID=$1`,
+            [this.id]
+        );
+    }
+}
+function factorySessionSize(data){
+    return new SessionSize(data.sessionsizeid, data.minutes);
 }
 
 const dbApi = {
@@ -123,7 +153,7 @@ const dbApi = {
     /**
      * Fetchs one specific dataset from the database. It will automaticly transformed into an object.
      * @param {*} type A String with the name of the desired object. 
-     * Possible types: "administrator", "competitor", "topic"
+     * Possible types: "administrator", "competitor", "topic", "sessionsize"
      * @param {*} specifier The ID of the desired Object
      * @returns An Object of the desired type or undefined if no dataset was found.
      */
@@ -143,8 +173,12 @@ const dbApi = {
                 break;
             case 'topic':
                 query = 'SELECT * FROM Topic WHERE TopicID=$1';
-                factory = factoryAdministrator;
+                factory = factoryTopic;
                 break;
+            case 'sessionsize':
+            query = 'SELECT * FROM SessionSize WHERE SessionSizeID=$1';
+            factory = factorySessionSize;
+            break;
         }
         if (query){
             await pool.query(query, [specifier])
@@ -161,7 +195,7 @@ const dbApi = {
     /**
      * Fetchs all datasets from the database. It will automaticly transform then into objects.
      * @param {*} type A String with the name of the desired objects. 
-     * Possible types: "administrator", "competitor", "topic"
+     * Possible types: "administrator", "competitor", "topic", "sessionsize"
      * @return An array of objects of the desired type. If no datasets are fetched the array is empty.
      */
     fetchAll: async function(type, specifier) {
@@ -180,7 +214,11 @@ const dbApi = {
                 break;
             case 'topic':
                 query = 'SELECT * FROM Topic WHERE CompetitorID=$1';
-                factory = factoryAdministrator;
+                factory = factoryTopic;
+                break;
+            case 'sessionsize':
+                query = 'SELECT * FROM SessionSize';
+                factory = factorySessionSize;
                 break;
         }
         if (query){
@@ -200,6 +238,42 @@ const dbApi = {
         }
         return objects;
     },
+
+    /**
+     * Saving a dataset to the Database.
+     * @param {*} type Type of the objecttype to be saved or an objetc which implements the create method.
+     * Possible types: "topic", "sessionsize"
+     * @param {*} params Constructor parameters array for the object. Dont uses this if the type is already an object.
+     */
+    create : function(type, params){
+        var query = undefined;
+
+        if (params){
+            var object = undefined;
+            var constructor = undefined;            
+
+            switch (type){
+                case "topic":
+                    constructor = Topic;
+                    break;
+                case "sessionsize":
+                    constructor = SessionSize;
+                    break;
+            }
+            if (constructor){
+                object = new constructor(...params);
+                query = object.create();
+
+                pool.query(query.sql, query.params)
+                    .catch(error => console.log(error));
+            }
+        } else {
+            query = type.create();
+            pool.query(query.sql, query.params)
+                    .catch(error => console.log(error));
+        }        
+    },
+
 
     // Administrator CRUD
 
@@ -283,9 +357,9 @@ const dbApi = {
 
     // Topic CRUD
 
-    createTopic : async function(topic, title, competitorId){
+    createTopic : async function(topic, title, competitorId, sessionSize){
         if (title && competitorId){
-            topic = new Topic(topic, title, competitorId);
+            topic = new Topic(topic, title, competitorId, sessionSize);
         }
 
         const query = topic.create();
@@ -293,9 +367,9 @@ const dbApi = {
             .catch(error => console.log(error));
     },
 
-    updateTopic : async function(topic, title, competitorId){
+    updateTopic : async function(topic, title, competitorId, sessionSize){
         if (title && competitorId){
-            topic = new Topic(topic, title, competitorId);
+            topic = new Topic(topic, title, competitorId, sessionSize);
         }
 
         const query = topic.update();
