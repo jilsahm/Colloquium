@@ -58,4 +58,21 @@ router.delete('/', /*sessionChecker,*/ async function(req, res, next) {
     }
 });
 
+// Session view
+router.get('/session', /*sessionChecker,*/ async function(req, res, next){
+    const topicId = req.query.topicid;
+    const competitorId = req.query.competitorid;
+
+    const dummyStatistics = {
+        numberOfSessions : 3,
+        averageSessionTime : 14.34,
+        averageAnswerRating : 7.8
+    }
+    if (Pattern.ID.test(topicId) && Pattern.ID.test(competitorId)){
+        res.render('session', {statistic : dummyStatistics})
+    } else {
+        res.redirect('/overview');
+    }
+});
+
 module.exports = router;

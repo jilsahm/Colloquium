@@ -2,35 +2,55 @@ extends layout
 
 block extras
     link(rel="stylesheet", href="/stylesheets/overview.css")
-    script(src="/javascripts/details.js")
+    link(rel="stylesheet", href="/stylesheets/session.css")
 
 block content
     div#mainwrapper
         nav
             h2=`${competitor.surename} ${competitor.lastname}`
             ul
-                li.showForm(value="-1") Create Topic
-                li Show Topic
+                li.showForm(value="-1") Start Session
+                li 
+                    a(href=`/details?competitorid=${competitor.id}`) To Details
                 li 
                     a(href="/overview") To Overview
                 li 
                     a(href="/auth/logout") Logout
         main
-            h2 Topics
+            h2 Sessions
+            div#stats
+                div.stat
+                    i.fas.fa-comment
+                    div
+                        p= statistic.numberOfSessions
+                        p Sessions
+                div.stat
+                    i.fas.fa-stopwatch
+                    div
+                        p= statistic.averageSessionTime
+                        p Average session time
+                div.stat
+                    i.fas.fa-star-half-alt
+                    div
+                        p= statistic.averageAnswerRating
+                        p Average answer rating
             table
                 tr
-                    th Topic
-                    th Session Size (Minutes)
+                    th Question
+                    th Times asked
+                    th Answerrating
                     th
-                if topics
-                    each topic in topics
+                if questions
+                    each question in questions
                         tr
-                            td= topic.title
-                            td= topic.sessionSize
+                            td= question.content
+                            td= question.timesAsked
+                            td= question.answerRating
                             td
-                                i.fas.fa-eye.showSessions(value=topic.id)
-                                i.fas.fa-pencil-alt.showForm(value=topic.id)
-                                i.fas.fa-trash-alt.deleteTopic(value=topic.id)
+                                i.fas.fa-eye.showSessions(value=question.id)
+                                i.fas.fa-pencil-alt.showForm(value=question.id)
+                                i.fas.fa-trash-alt.deleteTopic(value=question.id)
+//
             div#formular                    
                 form(action="/details", method="POST")
                     input.hidden(id="input_send",type="submit")

@@ -10,12 +10,20 @@ function init(){
 }
 
 function registerButtons(){
+    const competitorId = null;
+
     document.getElementById('formOk').onclick = sendData;
     document.getElementById('formCancel').onclick = hideForm;
 
     document.querySelectorAll('*.showForm').forEach(element => {
         element.onclick = () => {
             showForm(element.attributes.value.value);
+        };
+    });
+
+    document.querySelectorAll('*.showSession').forEach(element => {
+        element.onclick = () => {
+            showSession(element.attributes.value.value);
         };
     });
 }
@@ -46,4 +54,8 @@ function showForm(topicId){
         title.value = document.getElementById(`topic_${topicId}_title`).innerHTML;
     }
     document.getElementById('formular').style.display = 'block';
+}
+
+function showSession(competitorId, sessionId){
+
 }

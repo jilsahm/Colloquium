@@ -15,6 +15,7 @@ function registerButtons(){
 
     document.querySelectorAll('*.showDetails').forEach(element => {
         element.onclick = () => {
+            console.log(element);
             showDetails(element.attributes.value.value);
         };
     });
@@ -39,7 +40,7 @@ function registerButtons(){
                     node.classList.remove('selected');
                 }
             });
-            document.querySelectorAll('*.startSession').forEach(node => {
+            document.querySelectorAll('*.showDetails').forEach(node => {
                 node.value = element.attributes.value.value;
             });
         };

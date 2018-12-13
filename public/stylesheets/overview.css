@@ -60,9 +60,12 @@ i:hover{
 form > div{
     display: flex;
 }
-label, input{
+label, input, select{
     margin: 8px 8px 0 8px;
 }
-input{
-    flex: 9;
+label{
+    flex: 2;
+}
+input, select{
+    flex: 7;
 }
