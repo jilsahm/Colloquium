@@ -1,9 +1,51 @@
 #stats{
     display: flex;
+    justify-content: space-between;
+    width: 98%;
+    margin: auto auto 8px auto;
+}
+.critique{
+    grid-column: span 2;
+}
+.duration{
+    grid-column: 2;
+    text-align: right;
+}
+.session{
+    background: var(--bgComponent);
+    display: grid;
+    grid-template-columns: 50%;
+    width: 98%;
+    margin: auto auto 8px auto;
 }
 .stat{
     background: var(--bgComponent);
     display: grid;
-    flex: 1;
+    flex-basis: 32.7%;
     grid-template-columns: 33% 67%;
+}
+.stat > i{
+    color: var(--fgHeader);
+    font-size: 3rem;
+    line-height: 5rem;
+}
+.stat > i:hover{
+    color: var(--fgHeader) !important;
+    background: inherit !important;
+    cursor: auto !important;
+}
+.statnumber{
+    font-size: 2rem;
+    font-weight: bold;
+}
+aside {
+    border-bottom: 1px solid var(--fgHeader);
+}
+aside, .critique{
+    padding: 12px;
+}
+p{
+    color: var(--fgAccent);
+    text-align: right;
+    margin: 8px 16px 8px 0;
 }

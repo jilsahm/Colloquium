@@ -146,6 +146,29 @@ function factorySessionSize(data){
     return new SessionSize(data.sessionsizeid, data.minutes);
 }
 
+class Session{
+    //TODO
+}
+
+class Question{
+    //TODO
+}
+
+class Critique{
+    //TODO
+}
+
+class Statistics{
+    constructor(numberOfSessions, averageSessionTime, averageAnswerRating){
+        this.numberOfSessions = numberOfSessions;
+        this.averageSessionTime = averageSessionTime;
+        this.averageAnswerRating = averageAnswerRating;
+    }
+}
+function factoryStatistics(data){
+    return new Statistics(data.numberOfSessions, data.averageSessionTime, data.averageAnswerRating);
+}
+
 const dbApi = {
 
     // Fetch methods
@@ -153,7 +176,7 @@ const dbApi = {
     /**
      * Fetchs one specific dataset from the database. It will automaticly transformed into an object.
      * @param {*} type A String with the name of the desired object. 
-     * Possible types: "administrator", "competitor", "topic", "sessionsize"
+     * Possible types: "administrator", "competitor", "topic", "sessionsize", "statistics"
      * @param {*} specifier The ID of the desired Object
      * @returns An Object of the desired type or undefined if no dataset was found.
      */
@@ -176,9 +199,17 @@ const dbApi = {
                 factory = factoryTopic;
                 break;
             case 'sessionsize':
-            query = 'SELECT * FROM SessionSize WHERE SessionSizeID=$1';
-            factory = factorySessionSize;
-            break;
+                query = 'SELECT * FROM SessionSize WHERE SessionSizeID=$1';
+                factory = factorySessionSize;
+                break;
+            case 'statistics':
+                query = `SELECT COUNT(s.SessionID) AS numberOfSessions,
+                        AVG(s.Endtime - s.Starttime) AS averageSessionTime,
+                        AVG(q.AnswerRating) AS averageAnswerRating 
+                        FROM Session AS s, Question AS q                        
+                        WHERE s.TopicID=$1 AND s.TopicID = q.TopicID`;
+                factory = factoryStatistics;
+                break;
         }
         if (query){
             await pool.query(query, [specifier])

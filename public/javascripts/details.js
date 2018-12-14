@@ -10,7 +10,7 @@ function init(){
 }
 
 function registerButtons(){
-    const competitorId = null;
+    const competitorId = new URL(window.location.href).searchParams.get('competitorid');
 
     document.getElementById('formOk').onclick = sendData;
     document.getElementById('formCancel').onclick = hideForm;
@@ -21,9 +21,9 @@ function registerButtons(){
         };
     });
 
-    document.querySelectorAll('*.showSession').forEach(element => {
+    document.querySelectorAll('*.showSessions').forEach(element => {
         element.onclick = () => {
-            showSession(element.attributes.value.value);
+            showSessions(competitorId, element.attributes.value.value);
         };
     });
 }
@@ -56,6 +56,8 @@ function showForm(topicId){
     document.getElementById('formular').style.display = 'block';
 }
 
-function showSession(competitorId, sessionId){
-
+function showSessions(competitorId, topicId){
+    if (Pattern.ID.test(competitorId) && Pattern.ID.test(topicId)){
+        window.open(`/details/session?competitorid=${competitorId}&topicid=${topicId}`, '_self');
+    }
 }

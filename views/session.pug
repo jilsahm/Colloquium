@@ -9,7 +9,7 @@ block content
         nav
             h2=`${competitor.surename} ${competitor.lastname}`
             ul
-                li.showForm(value="-1") Start Session
+                li.showForm(value="-1") Create Session
                 li 
                     a(href=`/details?competitorid=${competitor.id}`) To Details
                 li 
@@ -17,23 +17,33 @@ block content
                 li 
                     a(href="/auth/logout") Logout
         main
-            h2 Sessions
+            h2= `${topic.title}`
             div#stats
                 div.stat
                     i.fas.fa-comment
                     div
-                        p= statistic.numberOfSessions
+                        p.statnumber= statistic.numberOfSessions
                         p Sessions
                 div.stat
                     i.fas.fa-stopwatch
                     div
-                        p= statistic.averageSessionTime
+                        p.statnumber= statistic.averageSessionTime
                         p Average session time
                 div.stat
                     i.fas.fa-star-half-alt
                     div
-                        p= statistic.averageAnswerRating
+                        p.statnumber= statistic.averageAnswerRating
                         p Average answer rating
+            if sessions
+                - var counter = 1
+                each session in sessions
+                    div.session
+                        aside.date= `Session ${counter} from ${session.date}`
+                        aside.duration= `${session.duration} minutes`
+                        if session.critiques
+                            each critique in session.critiques
+                                div.critique= critique.content
+                    - counter++
             table
                 tr
                     th Question
@@ -45,26 +55,21 @@ block content
                         tr
                             td= question.content
                             td= question.timesAsked
+                                i.fas.fa-angle-double-up
                             td= question.answerRating
                             td
-                                i.fas.fa-eye.showSessions(value=question.id)
+                                i.fas.fa-eye.showSession(value=question.id)
                                 i.fas.fa-pencil-alt.showForm(value=question.id)
                                 i.fas.fa-trash-alt.deleteTopic(value=question.id)
-//
+
             div#formular                    
-                form(action="/details", method="POST")
+                form(action="/details/session", method="POST")
                     input.hidden(id="input_send",type="submit")
                     input.hidden(id="input_id", type="number", name="topicid", value='-1')
                     input.hidden(id="competitor_id", type="number", name="competitorid", value=competitor.id)
                     div
                         label(for="title") Title
                         input(id="title", type="text", name="title", value='')
-                    div
-                        label(for="sessionsize") Session Size
-                        select(id="sessionsize", name="sessionsize")
-                            if sessionSizes
-                                each sessionSize in sessionSizes
-                                    option(value=sessionSize.id)= `${sessionSize.minutes} Minutes`
                 div.buttongroup
                     i.fas.fa-check-circle#formOk                    
                     i.fas.fa-times-circle#formCancel

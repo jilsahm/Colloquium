@@ -63,13 +63,71 @@ router.get('/session', /*sessionChecker,*/ async function(req, res, next){
     const topicId = req.query.topicid;
     const competitorId = req.query.competitorid;
 
+    console.log(await dbApi.fetchOne('statistics', topicId));
+
     const dummyStatistics = {
         numberOfSessions : 3,
         averageSessionTime : 14.34,
         averageAnswerRating : 7.8
-    }
-    if (Pattern.ID.test(topicId) && Pattern.ID.test(competitorId)){
-        res.render('session', {statistic : dummyStatistics})
+    };
+    const dummySessions = [
+        {
+            date : '2017-14-12',
+            duration : 14.14,
+            critiques : [
+                {
+                    content : 'More colores!'
+                },
+                {
+                    content : 'More animations!'
+                },
+                {
+                    content : 'Usage of to many fill words...'
+                }
+            ]
+        },
+        {
+            date : '2017-14-11',
+            duration : 14.55,
+            critiques : [
+                {
+                    content : 'More colores!'
+                },
+                {
+                    content : 'More animations!'
+                },
+                {
+                    content : 'Usage of to many fill words...'
+                }
+            ]
+        }
+    ];
+    const dummyQuestions = [
+        {
+            id : 1,
+            content : 'What the heck is...?',
+            timesAsked : 1,
+            answerRating: 8.6
+        },
+        {
+            id : 2,
+            content : 'What the hell is...?',
+            timesAsked : 2,
+            answerRating: 7.0
+        }
+    ];
+
+    const competitor = await dbApi.fetchOne('competitor', competitorId);
+    const topic = await dbApi.fetchOne('topic', topicId);
+
+    if (sanitizer.isValidId(topicId) && sanitizer.isValidId(competitorId)){
+        res.render('session', {
+            competitor : competitor,
+            topic : topic,
+            statistic : dummyStatistics,
+            sessions : dummySessions,
+            questions : dummyQuestions
+        });
     } else {
         res.redirect('/overview');
     }
