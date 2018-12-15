@@ -6,7 +6,7 @@ const Pattern = {
 };
 
 function init(){
-    registerButtons();
+    registerButtons();    
 }
 
 function registerButtons(){
@@ -57,7 +57,7 @@ function showForm(topicId){
 }
 
 function showSessions(competitorId, topicId){
-    if (Pattern.ID.test(competitorId) && Pattern.ID.test(topicId)){
+    if (Pattern.ID.test(competitorId) && Pattern.ID.test(topicId) && competitorId > 0 && topicId > 0){
         window.open(`/details/session?competitorid=${competitorId}&topicid=${topicId}`, '_self');
     }
 }

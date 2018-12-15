@@ -3,13 +3,18 @@ extends layout
 block extras
     link(rel="stylesheet", href="/stylesheets/overview.css")
     link(rel="stylesheet", href="/stylesheets/session.css")
+    script(src="/javascripts/sessionview.js")
 
 block content
     div#mainwrapper
         nav
+            h2= topic.id
             h2=`${competitor.surename} ${competitor.lastname}`
             ul
-                li.showForm(value="-1") Create Session
+                li Create Session
+                li.showForm(value="-1") Create Question
+                li
+                    a(href=`/details/session?competitorid=${competitor.id}&topicid=${topic.id}`) Refresh
                 li 
                     a(href=`/details?competitorid=${competitor.id}`) To Details
                 li 
@@ -53,10 +58,10 @@ block content
                 if questions
                     each question in questions
                         tr
-                            td= question.content
+                            td(id=`question_${question.id}_content`)= question.content
                             td= question.timesAsked
                                 i.fas.fa-angle-double-up
-                            td= question.answerRating
+                            td(id=`question_${question.id}_answerRating`)= question.answerRating
                             td
                                 i.fas.fa-eye.showSession(value=question.id)
                                 i.fas.fa-pencil-alt.showForm(value=question.id)
@@ -65,11 +70,15 @@ block content
             div#formular                    
                 form(action="/details/session", method="POST")
                     input.hidden(id="input_send",type="submit")
-                    input.hidden(id="input_id", type="number", name="topicid", value='-1')
+                    input.hidden(id="input_id", type="number", name="questionid", value='-1')
                     input.hidden(id="competitor_id", type="number", name="competitorid", value=competitor.id)
+                    input.hidden(id="topic_id", type="number", name="topicid", value=topic.id)
                     div
-                        label(for="title") Title
-                        input(id="title", type="text", name="title", value='')
+                        label(for="question") Question
+                        input(id="question", type="text", name="question", value='')
+                    div
+                        label(for="answerrating") Question
+                        input(id="answerrating", type="text", name="answerrating", value='0')
                 div.buttongroup
                     i.fas.fa-check-circle#formOk                    
                     i.fas.fa-times-circle#formCancel

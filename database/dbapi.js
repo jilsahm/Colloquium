@@ -151,7 +151,34 @@ class Session{
 }
 
 class Question{
-    //TODO
+    constructor(id, content, answerRating, topicId, timesAsked = 0){
+        this.id = id;
+        this.content = content;
+        this.answerRating = answerRating;
+        this.topicId = topicId;
+        this.timesAsked = timesAsked;
+    }
+    create(){
+        return new Query(
+            `INSERT INTO Question(Content, TimesAsked, AnswerRating, TopicID) VALUES ($1, 1, $2, $3)`,
+            [this.content, this.answerRating, this.topicId]
+        );
+    }
+    update(){
+        return new Query(
+            `UPDATE Question SET Content=$1, AnswerRating=$2 WHERE QuestionID=$2`,
+            [this.content, this.answerRating, this.id]
+        );
+    }
+    delete(){
+        return new Query(
+            `DELETE FROM Question WHERE QuestionID=$1`,
+            [this.id]
+        );
+    }
+}
+function factoryQuestion(data){
+    return new Question(data.questionid, data.content, data.answerrating, data.topicid, data.timesAsked);
 }
 
 class Critique{
@@ -176,7 +203,7 @@ const dbApi = {
     /**
      * Fetchs one specific dataset from the database. It will automaticly transformed into an object.
      * @param {*} type A String with the name of the desired object. 
-     * Possible types: "administrator", "competitor", "topic", "sessionsize", "statistics"
+     * Possible types: "administrator", "competitor", "question", "topic", "sessionsize", "statistics"
      * @param {*} specifier The ID of the desired Object
      * @returns An Object of the desired type or undefined if no dataset was found.
      */
@@ -193,6 +220,10 @@ const dbApi = {
             case 'competitor':
                 query = 'SELECT * FROM Competitor WHERE CompetitorID=$1';
                 factory = factoryCompetitor;
+                break;
+            case 'question':
+                query = 'SELECT * FROM Question WHERE QuestionID=$1';
+                factory = factoryQuestion;
                 break;
             case 'topic':
                 query = 'SELECT * FROM Topic WHERE TopicID=$1';
@@ -226,7 +257,7 @@ const dbApi = {
     /**
      * Fetchs all datasets from the database. It will automaticly transform then into objects.
      * @param {*} type A String with the name of the desired objects. 
-     * Possible types: "administrator", "competitor", "topic", "sessionsize"
+     * Possible types: "administrator", "competitor", "question", "topic", "sessionsize"
      * @return An array of objects of the desired type. If no datasets are fetched the array is empty.
      */
     fetchAll: async function(type, specifier) {
@@ -242,6 +273,10 @@ const dbApi = {
             case 'competitor':
                 query = 'SELECT * FROM Competitor';
                 factory = factoryCompetitor;
+                break;
+            case 'question':
+                query = 'SELECT * FROM Question WHERE TopicID=$1';
+                factory = factoryQuestion;
                 break;
             case 'topic':
                 query = 'SELECT * FROM Topic WHERE CompetitorID=$1';
@@ -273,7 +308,7 @@ const dbApi = {
     /**
      * Saving a dataset to the Database.
      * @param {*} type Type of the objecttype to be saved or an objetc which implements the create method.
-     * Possible types: "topic", "sessionsize"
+     * Possible types: "question", "topic", "sessionsize"
      * @param {*} params Constructor parameters array for the object. Dont uses this if the type is already an object.
      */
     create : function(type, params){
@@ -284,10 +319,13 @@ const dbApi = {
             var constructor = undefined;            
 
             switch (type){
-                case "topic":
+                case 'question':
+                    constructor = Question;
+                    break;
+                case 'topic':
                     constructor = Topic;
                     break;
-                case "sessionsize":
+                case 'sessionsize':
                     constructor = SessionSize;
                     break;
             }

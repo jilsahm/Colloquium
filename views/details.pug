@@ -10,7 +10,9 @@ block content
             h2=`${competitor.surename} ${competitor.lastname}`
             ul
                 li.showForm(value="-1") Create Topic
-                li Show Topic
+                li.showSessions(value="-1") Show Topic
+                li
+                    a(href=`/details?competitorid=${competitor.id}`) Refresh
                 li 
                     a(href="/overview") To Overview
                 li 
@@ -25,7 +27,7 @@ block content
                 if topics
                     each topic in topics
                         tr
-                            td= topic.title
+                            td(id=`topic_${topic.id}_title`)= topic.title
                             td= topic.sessionSize
                             td
                                 i.fas.fa-eye.showSessions(value=topic.id)

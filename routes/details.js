@@ -133,4 +133,18 @@ router.get('/session', /*sessionChecker,*/ async function(req, res, next){
     }
 });
 
+router.post('/session', /*sessionChecker,*/ (req, res, next) => {
+    const questionId = req.body.questionid;
+    const competitorId = req.body.competitorid;
+    const topicId = req.body.topicid;
+    const question = req.body.question;
+    const answerRating = req.body.answerRating;
+
+    if (sanitizer.isValidQuestion(questionId, question, answerRating, topicId)){
+        if (0 < questionId){
+            dbApi.create('question', [questionId, question, answerRating, topicId]);
+        }
+    }
+});
+
 module.exports = router;
