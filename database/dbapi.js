@@ -166,7 +166,7 @@ class Question{
     }
     update(){
         return new Query(
-            `UPDATE Question SET Content=$1, AnswerRating=$2 WHERE QuestionID=$2`,
+            `UPDATE Question SET Content=$1, AnswerRating=$2 WHERE QuestionID=$3`,
             [this.content, this.answerRating, this.id]
         );
     }
@@ -178,7 +178,7 @@ class Question{
     }
 }
 function factoryQuestion(data){
-    return new Question(data.questionid, data.content, data.answerrating, data.topicid, data.timesAsked);
+    return new Question(data.questionid, data.content, data.answerrating, data.topicid, data.timesasked);
 }
 
 class Critique{
@@ -311,7 +311,7 @@ const dbApi = {
      * Possible types: "question", "topic", "sessionsize"
      * @param {*} params Constructor parameters array for the object. Dont uses this if the type is already an object.
      */
-    create : function(type, params){
+    create : async function(type, params, justUpdate = false){
         var query = undefined;
 
         if (params){
@@ -331,20 +331,36 @@ const dbApi = {
             }
             if (constructor){
                 object = new constructor(...params);
-                query = object.create();
+                query = (justUpdate) ? object.update() : object.create();
 
                 pool.query(query.sql, query.params)
                     .catch(error => console.log(error));
             }
         } else {
-            query = type.create();
+            query = (justUpdate) ? type.update() : type.create();
             pool.query(query.sql, query.params)
                     .catch(error => console.log(error));
         }        
     },
 
+    /**
+     * Updating a dataset in the Database.
+     * @param {*} type TODO
+     * @param {*} params TODO
+     */
+    update : async function(type, params){
+        this.create(type, params, true);
+    },
+
+    modifyQuestionCount : async function(questionId, questionMod){
+        const query = 'UPDATE Question SET TimesAsked = TimesAsked + $1 WHERE QuestionID = $2';
+        const modifier = (-1 == questionMod) ? -1 : 1;
+        pool.query(query, [modifier, questionId]).catch(error => console.log(error));
+    }
 
     // Administrator CRUD
+    // TODO
+    // Hell, need to get rid of this...
 
     createAdministrator : function(administrator){
         const query = administrator.create();
@@ -460,10 +476,4 @@ const dbApi = {
 
 };
 
-
-/*
-var admin = new Administrator(1, 'Eve', 'test');
-dbApi.updateAdministrator(admin);
-var salt = bcrypt.genSaltSync(SALT_LEVEL);
-console.log(bcrypt.hashSync('Eve', salt));*/
 module.exports = dbApi;

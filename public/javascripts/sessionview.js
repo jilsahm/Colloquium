@@ -33,6 +33,13 @@ function registerButtons(){
             });
         };
     });
+
+    document.querySelectorAll('i[class^=fa-angle]').forEach(element => {
+        element.onclick = function(){
+            // TODO
+            modifyQuestionCount(/* TODO */ element.attributes.value.value);
+        }
+    });
 }
 
 function sendData(){
@@ -82,6 +89,15 @@ function deleteEntity(competitorId, topicId, targetId, targetType){
     request.open('DELETE', `./details/session?${targetType}Id=${targetId}`, false);
     request.onload = () => {
         window.open(`./details/session?competitorid=${competitorId}&topicid=${topicId}`, '_self');
+    }
+    request.send(null);
+}
+
+function modifyQuestionCount(questionId, questionMod){
+    var request = new XMLHttpRequest();
+    request.open('PUT' ,`/details/session?questionid=${questionId}&mod=${questionMod}`, false);
+    request.onload = function(){
+        window.location.href = window.location.href;
     }
     request.send(null);
 }

@@ -1,4 +1,24 @@
-☐ Creating Questions
+Sessionview
+✔ Creating Questions @done(18-12-15 23:17)
 ☐ Updating Questions
-☐ Swaping dummy questions with real ones in the POST method
+✔ Swaping dummy questions with real ones in the POST method @done(18-12-15 23:17)
+☐ Creating Critiques
+☐ Updating Critiques
+☐ Swaping dummy critiques with real ones in the POST method
 ☐ Building the session simulation component
+
+Database
+☐ Cascading deletions
+☐ Build session size management
+
+Database API
+☐ Get rid of the non generic methods. ASAP!
+
+Security
+☐ Activate sessions everywhere
+☐ Regeneration of sessions
+☐ Implement legit administrator creation
+
+Unit Tests
+✔ Build them... @done(18-12-15 21:01)
+☐ Increasing coverage

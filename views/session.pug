@@ -60,7 +60,8 @@ block content
                         tr
                             td(id=`question_${question.id}_content`)= question.content
                             td= question.timesAsked
-                                i.fas.fa-angle-double-up
+                                i.fas.fa-angle-double-up(value=1)
+                                i.fas.fa-angle-double-down(value=-1)
                             td(id=`question_${question.id}_answerRating`)= question.answerRating
                             td
                                 i.fas.fa-eye.showSession(value=question.id)
