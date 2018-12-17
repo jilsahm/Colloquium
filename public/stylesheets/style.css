@@ -10,6 +10,7 @@
   --fgAccent: #606060;
 
   --border: 6px solid var(--bgPrimary);
+  --borderAccent: 1px solid var(--fgHeader);
 }
 
 .selected{

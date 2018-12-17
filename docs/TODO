@@ -1,15 +1,22 @@
 Sessionview
 ✔ Creating Questions @done(18-12-15 23:17)
 ☐ Updating Questions
+☐ Deleting Questions
 ✔ Swaping dummy questions with real ones in the POST method @done(18-12-15 23:17)
 ☐ Creating Critiques
 ☐ Updating Critiques
+☐ Deleting Critiques
 ☐ Swaping dummy critiques with real ones in the POST method
-☐ Building the session simulation component
+✔ Building the session simulation @done(18-12-17 17:18)
+✔ Transfer session to server @done(18-12-17 17:18)
+☐ Save session to database
+☐ Swaping dummy sessions with real ones
+☐ Add delete option for sessions
 
 Database
 ☐ Cascading deletions
 ☐ Build session size management
+✔ Alter session erd @done(18-12-17 17:19)
 
 Database API
 ☐ Get rid of the non generic methods. ASAP!

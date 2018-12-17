@@ -93,7 +93,6 @@ class Topic{
         this.title = title;
         this.competitorId = competitorId;
         this.sessionSize = sessionSize;
-        console.log(this);
     }
     create(){
         return new Query(
@@ -147,7 +146,15 @@ function factorySessionSize(data){
 }
 
 class Session{
-    //TODO
+    constructor(id, startTime, endTime, sessionSizeId){
+        this.id = id;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.sessionSizeId = sessionSizeId;
+    }
+}
+function factorySession(data){
+    return new Session(data.sessionid, data.starttime, data.endtime, data.sessionsizeid);
 }
 
 class Question{
@@ -352,11 +359,47 @@ const dbApi = {
         this.create(type, params, true);
     },
 
+    /**
+     * Deletes an object from the database or, if the id and typename is given, the corresponding data.
+     * @param {*} type Either an object which implements the delete method or on of the following typenames:
+     * "critique", "question".
+     * @param {*} id The id of the dataset. Leave it undefined if type is an object.
+     */
+    deleteOne : async function(type, id){
+        var query = undefined;
+
+        if (id) {
+            switch (type) {
+                case 'critique':
+                    query = 'DELETE FROM Critique WHERE CritiqueID = $1';
+                    break;
+                case 'question':
+                    query = 'DELETE FROM Question WHERE QuestionID = $1';
+                    break;
+            }
+            if (query) {
+                pool.query(query, [id]).catch(error => console.log(error));
+            }
+        } else {
+            query = type.delete();
+            pool.query(query.sql, query.params).catch(error => console.log(error));
+        }        
+    },
+
+    //TODO
+    deleteAll(type, specifier){
+        var query = undefined;
+
+        switch (type){
+            // TODO
+        }
+    },
+
     modifyQuestionCount : async function(questionId, questionMod){
         const query = 'UPDATE Question SET TimesAsked = TimesAsked + $1 WHERE QuestionID = $2';
         const modifier = (-1 == questionMod) ? -1 : 1;
         pool.query(query, [modifier, questionId]).catch(error => console.log(error));
-    }
+    },
 
     // Administrator CRUD
     // TODO

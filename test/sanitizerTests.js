@@ -56,4 +56,42 @@ describe("Sanitizer - Unit Test", function(){
         });
     });
 
+    describe("isValidISO8601", function(){
+        var valid01 = "2018-12-17T13:01:00.572Z";
+        var valid02 = "1990-01-01T23:59:59.000+09:00";
+        var valid03 = "-0001-12-31T00:00:00.000-11:59";
+        var valid04 = "-190001-12-31T24:00:00.000-11";
+
+        it(valid01, function(){
+            assert.equal(sanitizer.isValidISO8601(valid01), true);
+        });
+        it(valid02, function(){
+            assert.equal(sanitizer.isValidISO8601(valid02), true);
+        });
+        it(valid03, function(){
+            assert.equal(sanitizer.isValidISO8601(valid03), true);
+        });
+        it(valid04, function(){
+            assert.equal(sanitizer.isValidISO8601(valid04), true);
+        });
+
+        var invalid01 = "";
+        var invalid02 = "1990-01-01T24:59:59.000Z";
+        var invalid03 = "-0001-12-31T00:00:00.000-12:59";
+        var invalid04 = "-190001-13-31T24:00:00.000-11";
+
+        it(invalid01, function(){
+            assert.equal(sanitizer.isValidISO8601(invalid01), false);
+        });
+        it(invalid02, function(){
+            assert.equal(sanitizer.isValidISO8601(invalid02), false);
+        });
+        it(invalid03, function(){
+            assert.equal(sanitizer.isValidISO8601(invalid03), false);
+        });
+        it(invalid04, function(){
+            assert.equal(sanitizer.isValidISO8601(invalid04), false);
+        });
+    });
+
 });

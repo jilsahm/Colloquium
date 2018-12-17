@@ -1,8 +1,32 @@
+#currentsession{
+    border-left: var(--border);
+    width: 80%;
+    margin: 24px auto;
+    padding: 8px;    
+}
+#currentsession > div{
+    margin: 4px;
+    padding: 8px;
+}
+#sessionSize{
+    color: var(--fgAccent);
+    font-size: 1rem !important;
+    margin-left: 4px;
+}
 #stats{
     display: flex;
     justify-content: space-between;
     width: 98%;
     margin: auto auto 8px auto;
+}
+.counter, .counterControl{
+    font-size: 3rem;
+    text-align: center;
+    border-bottom: var(--borderAccent);
+}
+.counterControl > i{
+    font-size: inherit !important;
+    width: 80%;
 }
 .critique{
     grid-column: span 2;
@@ -39,7 +63,7 @@
     font-weight: bold;
 }
 aside {
-    border-bottom: 1px solid var(--fgHeader);
+    border-bottom: var(--borderAccent);
 }
 aside, .critique{
     padding: 12px;

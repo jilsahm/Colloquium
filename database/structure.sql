@@ -30,9 +30,8 @@ CREATE TABLE IF NOT EXISTS Topic (
 
 CREATE TABLE IF NOT EXISTS Session (
     SessionID SERIAL,
-    Starttime BIGINT,
+    SessionDate VARCHAR(32),
     Endtime BIGINT,
-    Duration BIGINT,
     TopicID INTEGER,    
     PRIMARY KEY (SessionID),
     FOREIGN KEY (TopicID) REFERENCES Topic(TopicID)    

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test" : "mocha --ui tdd",
+    "test": "mocha --ui tdd",
     "dev": "nodemon ./bin/www"
   },
   "dependencies": {

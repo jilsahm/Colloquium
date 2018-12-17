@@ -96,10 +96,12 @@ async function renderSessions(competitorId, topicId, res){
 
     const competitor = await dbApi.fetchOne('competitor', competitorId);
     const topic = await dbApi.fetchOne('topic', topicId);
+    const minutes = await dbApi.fetchOne('sessionsize', topic.sessionSize);
     const questions = await dbApi.fetchAll('question', topicId);
 
     res.render('session', {
         competitor : competitor,
+        minutes : minutes.minutes,
         topic : topic,
         statistic : dummyStatistics,
         sessions : dummySessions,
@@ -121,12 +123,19 @@ router.get('/session', /*sessionChecker,*/ async function(req, res, next){
 });
 
 router.put('/session', /*sessionChecker,*/ async function(req, res, next){
-    const questionId = req.query.questionid;
-    const questionMod = req.query.mod;
+    if (req.query.questionid){
+        const questionId = req.query.questionid;
+        const questionMod = req.query.mod;
 
-    if (sanitizer.isValidId(questionId) && sanitizer.isValidId(questionMod)){
-        dbApi.modifyQuestionCount();
-    }
+        if (sanitizer.isValidId(questionId) && sanitizer.isValidId(questionMod)){
+            dbApi.modifyQuestionCount();
+        }
+    } else {
+        const sessionDate = req.query.sessiondate;
+        const elapsedTime = req.query.elapsedtime;
+        console.log(sessionDate, elapsedTime);
+    }   
+    res.sendStatus(200); 
 });
 
 router.post('/session', /*sessionChecker,*/ async function(req, res, next){
@@ -144,6 +153,16 @@ router.post('/session', /*sessionChecker,*/ async function(req, res, next){
         }
     }
     renderSessions(competitorId, topicId, res);
+});
+
+router.delete('/session', /*sessionChecker,*/ async function(req, res, next){
+    const type = req.query.type;
+    const id = req.query.id;
+
+    if (type && id && sanitizer.isValidType(type) && sanitizer.isValidId(id)) {
+        await dbApi.deleteOne(type, id);
+    }
+    res.sendStatus(200);
 });
 
 module.exports = router;

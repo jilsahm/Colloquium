@@ -1,10 +1,16 @@
 const Pattern = {
     ANSWER_RATING : /^([0-9]|10)$/,
-    CONTENT : /^(\w|[ \.\?',;äöüÄÖÜß]){0,256}$/,
+    CONTENT : /^(\w|[ \.\?\-',;äöüÄÖÜß]){0,256}$/,
     ID : /^-?[1-9][0-9]{0,7}$/,
+
+    // 00:00:00.000 - 23:59:59.999
+    // (([01][0-9]|2[0-3])(:([0-5][0-9])){2}|24:00:00)\.[0-9]{3}(Z|[+-]([0][0-9]|1[01]))(:[0-5][0-9])?
+    ISO8601 : /^(([+-][0-9][0-9]?)?|[+-]?)[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3])(:([0-5][0-9])){2}|24:00:00)\.[0-9]{3}(Z|[+-]([0][0-9]|1[01]))(:[0-5][0-9])?$/,
+    
     NAME : /^(\w|[äöüÄÖÜß]){1,64}$/,
-    TITLE : /^(\w|[ \.\?',;äöüÄÖÜß]){0,128}$/,
-    SESSIONSIZE : /^[1-9][0-9]{0,3}$/
+    SESSIONSIZE : /^[1-9][0-9]{0,3}$/,
+    TITLE : /^(\w|[ \.\?\-',;äöüÄÖÜß]){0,128}$/,
+    TYPE : /^(critique|question)$/
 };
 
 const Validator = {
@@ -23,6 +29,10 @@ const Validator = {
 
     isValidQuestion(questionId, content, answerRating, topicId){
         return Pattern.ID.test(questionId) && Pattern.CONTENT.test(content) && Pattern.ANSWER_RATING.test(answerRating) && Pattern.ID.test(topicId);
+    },
+
+    isValidISO8601(dateString){
+        return Pattern.ISO8601.test(dateString);
     }
 
 };
