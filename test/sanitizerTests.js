@@ -57,10 +57,10 @@ describe("Sanitizer - Unit Test", function(){
     });
 
     describe("isValidISO8601", function(){
-        var valid01 = "2018-12-17T13:01:00.572Z";
-        var valid02 = "1990-01-01T23:59:59.000+09:00";
-        var valid03 = "-0001-12-31T00:00:00.000-11:59";
-        var valid04 = "-190001-12-31T24:00:00.000-11";
+        const valid01 = "2018-12-17T13:01:00.572Z";
+        const valid02 = "1990-01-01T23:59:59.000+09:00";
+        const valid03 = "-0001-12-31T00:00:00.000-11:59";
+        const valid04 = "-190001-12-31T24:00:00.000-11";
 
         it(valid01, function(){
             assert.equal(sanitizer.isValidISO8601(valid01), true);
@@ -75,10 +75,10 @@ describe("Sanitizer - Unit Test", function(){
             assert.equal(sanitizer.isValidISO8601(valid04), true);
         });
 
-        var invalid01 = "";
-        var invalid02 = "1990-01-01T24:59:59.000Z";
-        var invalid03 = "-0001-12-31T00:00:00.000-12:59";
-        var invalid04 = "-190001-13-31T24:00:00.000-11";
+        const invalid01 = "";
+        const invalid02 = "1990-01-01T24:59:59.000Z";
+        const invalid03 = "-0001-12-31T00:00:00.000-12:59";
+        const invalid04 = "-190001-13-31T24:00:00.000-11";
 
         it(invalid01, function(){
             assert.equal(sanitizer.isValidISO8601(invalid01), false);
@@ -94,4 +94,61 @@ describe("Sanitizer - Unit Test", function(){
         });
     });
 
+    describe("isValidSession", function(){
+        const date = "2018-12-17T13:01:00.572Z";
+        const id = 1;
+
+        const validElapsedTime01 = '190.51200';
+        const validElapsedTime02 = '0.0020001';
+        const validElapsedTime03 = '1';
+        const validElapsedTime04 = '609012345.0000001';
+
+        it(validElapsedTime01, function(){
+            assert.equal(sanitizer.isValidSession(date, validElapsedTime01, id), true);
+        });
+        it(validElapsedTime02, function(){
+            assert.equal(sanitizer.isValidSession(date, validElapsedTime02, id), true);
+        });
+        it(validElapsedTime03, function(){
+            assert.equal(sanitizer.isValidSession(date, validElapsedTime03, id), true);
+        });
+        it(validElapsedTime04, function(){
+            assert.equal(sanitizer.isValidSession(date, validElapsedTime04, id), true);
+        });
+
+        const invalidElapsedTime01 = '.51200';
+        const invalidElapsedTime02 = '190000031333112.1231239999';
+        const invalidElapsedTime03 = '00.100';
+        const invalidElapsedTime04 = '100.1232.10000';
+
+        it(invalidElapsedTime01, function(){
+            assert.equal(sanitizer.isValidSession(date, invalidElapsedTime01, id), false);
+        });
+        it(invalidElapsedTime02, function(){
+            assert.equal(sanitizer.isValidSession(date, invalidElapsedTime02, id), false);
+        });
+        it(invalidElapsedTime03, function(){
+            assert.equal(sanitizer.isValidSession(date, invalidElapsedTime03, id), false);
+        });
+        it(invalidElapsedTime04, function(){
+            assert.equal(sanitizer.isValidSession(date, invalidElapsedTime04, id), false);
+        });
+
+    });
+
+    describe("isValidSession", function(){
+        const valid01 = 'critique';
+        const valid02 = 'question';
+        const valid03 = 'session';
+
+        it(valid01, function(){
+            assert.equal(sanitizer.isValidType(valid01), true);
+        });
+        it(valid02, function(){
+            assert.equal(sanitizer.isValidType(valid02), true);
+        });
+        it(valid03, function(){
+            assert.equal(sanitizer.isValidType(valid03), true);
+        });
+    });
 });

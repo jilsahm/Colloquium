@@ -24,6 +24,17 @@ class Query{
     }
 }
 
+function calculateDuration(elapsedTime){
+    var milliseconds = elapsedTime;
+    var minutes = Math.floor(milliseconds / 60000);
+    milliseconds = milliseconds % 60000;
+    var seconds = Math.floor(milliseconds / 1000);
+    milliseconds = Math.floor(milliseconds % 1000 / 100);
+    var minuteHelper = (10 > minutes) ? '0' : '';
+    var secondsHelper = (10 > seconds) ? '0' : '';
+    return `${minuteHelper}${minutes}:${secondsHelper}${seconds}.${milliseconds}`;
+}
+
 class Administrator{
     constructor(id, nickname, password){
         this.id = id;
@@ -146,15 +157,36 @@ function factorySessionSize(data){
 }
 
 class Session{
-    constructor(id, startTime, endTime, sessionSizeId){
+    constructor(id, sessionDate, elapsedTime, topicId){
         this.id = id;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.sessionSizeId = sessionSizeId;
+        this.sessionDate = sessionDate;
+        this.elapsedTime = elapsedTime;
+        this.topicId = topicId;
+    }
+    printDuration(){
+        return calculateDuration(this.elapsedTime);
+    }
+    create(){
+        return new Query(
+            `INSERT INTO Session(SessionDate, ElapsedTime, TopicID) VALUES ($1, $2, $3)`,
+            [this.sessionDate, this.elapsedTime, this.topicId]
+        );
+    }
+    update(){
+        return new Query(
+            `UPDATE Session SET SessionDate=$1, ElapsedTime=$2 WHERE SessionID=$3`,
+            [this.sessionDate, this.elapsedTime, this.id]
+        );
+    }
+    delete(){
+        return new Query(
+            `DELETE FROM Session WHERE SessionID=$1`,
+            [this.id]
+        );
     }
 }
 function factorySession(data){
-    return new Session(data.sessionid, data.starttime, data.endtime, data.sessionsizeid);
+    return new Session(data.sessionid, data.sessiondate, data.elapsedtime, data.topicdd);
 }
 
 class Question{
@@ -189,18 +221,44 @@ function factoryQuestion(data){
 }
 
 class Critique{
-    //TODO
+    constructor(id, content, positive, sessionId){
+        this.id = id;
+        this.content = content;
+        this.positive = positive;
+        this.sessionId = sessionId;
+    }
+    create(){
+        return new Query(
+            `INSERT INTO Critique(Content, Positive, SessionID) VALUES ($1, $2, $3)`,
+            [this.content, this.positive, this.sessionId]
+        );
+    }
+    update(){
+        return new Query(
+            `UPDATE Critique SET Content=$1, Positive=$2 WHERE CritiqueID=$3`,
+            [this.content, this.positive, this.id]
+        );
+    }
+    delete(){
+        return new Query(
+            `DELETE FROM Critique WHERE CritiqueID=$1`,
+            [this.id]
+        );
+    }
+}
+function factoryCritique(data){
+    return new Critique(data.critiqueid, data.content, data.positive, data.sessionid);
 }
 
 class Statistics{
     constructor(numberOfSessions, averageSessionTime, averageAnswerRating){
-        this.numberOfSessions = numberOfSessions;
-        this.averageSessionTime = averageSessionTime;
-        this.averageAnswerRating = averageAnswerRating;
+        this.numberOfSessions = (numberOfSessions) ? numberOfSessions : 0;
+        this.averageSessionTime = (averageSessionTime) ? calculateDuration(averageSessionTime) : '00:00.0';
+        this.averageAnswerRating = (averageAnswerRating) ? parseFloat(averageAnswerRating).toFixed(1) : '0.0';
     }
 }
 function factoryStatistics(data){
-    return new Statistics(data.numberOfSessions, data.averageSessionTime, data.averageAnswerRating);
+    return new Statistics(data.numberofsessions, data.averagesessiontime, data.averageanswerrating);
 }
 
 const dbApi = {
@@ -210,7 +268,7 @@ const dbApi = {
     /**
      * Fetchs one specific dataset from the database. It will automaticly transformed into an object.
      * @param {*} type A String with the name of the desired object. 
-     * Possible types: "administrator", "competitor", "question", "topic", "sessionsize", "statistics"
+     * Possible types: "administrator", "competitor", "critique", "question", "topic", "session", "sessionsize", "statistics"
      * @param {*} specifier The ID of the desired Object
      * @returns An Object of the desired type or undefined if no dataset was found.
      */
@@ -228,6 +286,10 @@ const dbApi = {
                 query = 'SELECT * FROM Competitor WHERE CompetitorID=$1';
                 factory = factoryCompetitor;
                 break;
+            case 'critique':
+                query = 'SELECT * FROM Critique WHERE CritiqueID=$1';
+                factory = factoryCritique;
+                break;
             case 'question':
                 query = 'SELECT * FROM Question WHERE QuestionID=$1';
                 factory = factoryQuestion;
@@ -236,16 +298,21 @@ const dbApi = {
                 query = 'SELECT * FROM Topic WHERE TopicID=$1';
                 factory = factoryTopic;
                 break;
+            case 'session':
+                query = 'SELECT * FROM Session WHERE SessionID=$1';
+                factory = factorySession;
+                break;
             case 'sessionsize':
                 query = 'SELECT * FROM SessionSize WHERE SessionSizeID=$1';
                 factory = factorySessionSize;
                 break;
             case 'statistics':
-                query = `SELECT COUNT(s.SessionID) AS numberOfSessions,
-                        AVG(s.Endtime - s.Starttime) AS averageSessionTime,
+                query = `SELECT COUNT(DISTINCT s.SessionID) AS numberOfSessions,
+                        AVG(s.elapsedTime) AS averageSessionTime,
                         AVG(q.AnswerRating) AS averageAnswerRating 
-                        FROM Session AS s, Question AS q                        
-                        WHERE s.TopicID=$1 AND s.TopicID = q.TopicID`;
+                        FROM Session AS s
+                        INNER JOIN Question AS q ON s.TopicID = q.TopicID
+                        WHERE s.TopicID=$1`;
                 factory = factoryStatistics;
                 break;
         }
@@ -264,7 +331,7 @@ const dbApi = {
     /**
      * Fetchs all datasets from the database. It will automaticly transform then into objects.
      * @param {*} type A String with the name of the desired objects. 
-     * Possible types: "administrator", "competitor", "question", "topic", "sessionsize"
+     * Possible types: "administrator", "competitor", "critique", "question", "topic", "session", "sessionsize"
      * @return An array of objects of the desired type. If no datasets are fetched the array is empty.
      */
     fetchAll: async function(type, specifier) {
@@ -281,6 +348,10 @@ const dbApi = {
                 query = 'SELECT * FROM Competitor';
                 factory = factoryCompetitor;
                 break;
+            case 'critique':
+                query = 'SELECT * FROM Critique';
+                factory = factoryCritique;
+                break;
             case 'question':
                 query = 'SELECT * FROM Question WHERE TopicID=$1';
                 factory = factoryQuestion;
@@ -288,6 +359,10 @@ const dbApi = {
             case 'topic':
                 query = 'SELECT * FROM Topic WHERE CompetitorID=$1';
                 factory = factoryTopic;
+                break;
+            case 'session':
+                query = 'SELECT * FROM Session WHERE TopicID=$1';
+                factory = factorySession;
                 break;
             case 'sessionsize':
                 query = 'SELECT * FROM SessionSize';
@@ -315,7 +390,7 @@ const dbApi = {
     /**
      * Saving a dataset to the Database.
      * @param {*} type Type of the objecttype to be saved or an objetc which implements the create method.
-     * Possible types: "question", "topic", "sessionsize"
+     * Possible types: "critique", "question", "topic", "session", "sessionsize"
      * @param {*} params Constructor parameters array for the object. Dont uses this if the type is already an object.
      */
     create : async function(type, params, justUpdate = false){
@@ -326,11 +401,17 @@ const dbApi = {
             var constructor = undefined;            
 
             switch (type){
+                case 'critique':
+                    constructor = Critique;
+                    break;
                 case 'question':
                     constructor = Question;
                     break;
                 case 'topic':
                     constructor = Topic;
+                    break;
+                case 'session':
+                    constructor = Session;
                     break;
                 case 'sessionsize':
                     constructor = SessionSize;
@@ -362,7 +443,7 @@ const dbApi = {
     /**
      * Deletes an object from the database or, if the id and typename is given, the corresponding data.
      * @param {*} type Either an object which implements the delete method or on of the following typenames:
-     * "critique", "question".
+     * "critique", "question", "session".
      * @param {*} id The id of the dataset. Leave it undefined if type is an object.
      */
     deleteOne : async function(type, id){
@@ -375,6 +456,9 @@ const dbApi = {
                     break;
                 case 'question':
                     query = 'DELETE FROM Question WHERE QuestionID = $1';
+                    break;
+                case 'session':
+                    query = 'DELETE FROM Session WHERE SessionID = $1';
                     break;
             }
             if (query) {

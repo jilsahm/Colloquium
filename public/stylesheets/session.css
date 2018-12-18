@@ -29,7 +29,7 @@
     width: 80%;
 }
 .critique{
-    grid-column: span 2;
+    grid-column: span 3;
 }
 .duration{
     grid-column: 2;
@@ -38,7 +38,8 @@
 .session{
     background: var(--bgComponent);
     display: grid;
-    grid-template-columns: 50%;
+    /*grid-template-columns: 47% 47% 6%;*/
+    grid-template-columns: auto auto auto;
     width: 98%;
     margin: auto auto 8px auto;
 }
@@ -62,11 +63,17 @@
     font-size: 2rem;
     font-weight: bold;
 }
+.textAlignRight{
+    text-align: right;
+}
 aside {
     border-bottom: var(--borderAccent);
 }
 aside, .critique{
     padding: 12px;
+}
+aside > i{
+    display: inline !important;
 }
 p{
     color: var(--fgAccent);

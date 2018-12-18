@@ -56,55 +56,19 @@ router.delete('/', /*sessionChecker,*/ async function(req, res, next) {
 // Session view
 
 async function renderSessions(competitorId, topicId, res){
-    const dummyStatistics = {
-        numberOfSessions : 3,
-        averageSessionTime : 14.34,
-        averageAnswerRating : 7.8
-    };
-    const dummySessions = [
-        {
-            date : '2017-14-12',
-            duration : 14.14,
-            critiques : [
-                {
-                    content : 'More colores!'
-                },
-                {
-                    content : 'More animations!'
-                },
-                {
-                    content : 'Usage of to many fill words...'
-                }
-            ]
-        },
-        {
-            date : '2017-14-11',
-            duration : 14.55,
-            critiques : [
-                {
-                    content : 'More colores!'
-                },
-                {
-                    content : 'More animations!'
-                },
-                {
-                    content : 'Usage of to many fill words...'
-                }
-            ]
-        }
-    ];
-
     const competitor = await dbApi.fetchOne('competitor', competitorId);
     const topic = await dbApi.fetchOne('topic', topicId);
+    const sessions = await dbApi.fetchAll('session', topicId);
     const minutes = await dbApi.fetchOne('sessionsize', topic.sessionSize);
     const questions = await dbApi.fetchAll('question', topicId);
+    const statistic = await dbApi.fetchOne('statistics', topicId);
 
     res.render('session', {
         competitor : competitor,
         minutes : minutes.minutes,
         topic : topic,
-        statistic : dummyStatistics,
-        sessions : dummySessions,
+        statistic : statistic,
+        sessions : sessions,
         questions : questions
     });
 }
@@ -133,7 +97,11 @@ router.put('/session', /*sessionChecker,*/ async function(req, res, next){
     } else {
         const sessionDate = req.query.sessiondate;
         const elapsedTime = req.query.elapsedtime;
-        console.log(sessionDate, elapsedTime);
+        const topicId = req.query.topicid;
+        
+        if (sanitizer.isValidSession(sessionDate, elapsedTime, topicId)){
+            dbApi.create('session', [-1, sessionDate, Math.round(elapsedTime), topicId]);
+        }
     }   
     res.sendStatus(200); 
 });
@@ -159,7 +127,7 @@ router.delete('/session', /*sessionChecker,*/ async function(req, res, next){
     const type = req.query.type;
     const id = req.query.id;
 
-    if (type && id && sanitizer.isValidType(type) && sanitizer.isValidId(id)) {
+    if (sanitizer.isValidType(type) && sanitizer.isValidId(id)) {
         await dbApi.deleteOne(type, id);
     }
     res.sendStatus(200);

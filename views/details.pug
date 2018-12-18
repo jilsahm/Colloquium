@@ -33,7 +33,7 @@ block content
                                 i.fas.fa-eye.showSessions(value=topic.id)
                                 i.fas.fa-pencil-alt.showForm(value=topic.id)
                                 i.fas.fa-trash-alt.deleteTopic(value=topic.id)
-            div#formular                    
+            div.formular#formular                    
                 form(action="/details", method="POST")
                     input.hidden(id="input_send",type="submit")
                     input.hidden(id="input_id", type="number", name="topicid", value='-1')

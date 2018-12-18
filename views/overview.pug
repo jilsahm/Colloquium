@@ -34,7 +34,7 @@ block content
                                 i.fas.fa-eye.showDetails(value=competitor.id)
                                 i.fas.fa-pencil-alt.showForm(value=competitor.id)
                                 i.fas.fa-trash-alt.deleteCompetitor(value=competitor.id)
-            div#formular                    
+            div.formular#formular                    
                 form(action="/overview", method="POST")
                     input.hidden(id='input_send',type="submit")
                     input.hidden(id='input_id', type="number", name="competitorid", value='-1')

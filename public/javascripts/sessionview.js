@@ -1,4 +1,8 @@
 window.onload = init;
+var IDs = {
+    competitorId : null,
+    topicId : null
+};
 
 const Pattern = {
     ID : /^-?[1-9][0-9]{0,7}$/,
@@ -112,8 +116,11 @@ function init(){
 }
 
 function registerButtons(){
+    IDs.competitorId = document.getElementById('competitor_id').attributes.value.value;
+    IDs.topicId = document.getElementById('topic_id').attributes.value.value;
     const counterButton = document.getElementById('counterButton');
     const clockNode = document.getElementById('currentTime');
+    const topicId = IDs.topicId;
     var counter = new Counter(counterButton, clockNode);
 
     counterButton.onclick = function(){
@@ -121,7 +128,7 @@ function registerButtons(){
     }
 
     //document.getElementById('sessionOk').onclick = TODO;
-    document.getElementById('sessionOk').onclick = () => sendSession(counter);
+    document.getElementById('sessionOk').onclick = () => sendSession(counter, topicId);
     document.getElementById('sessionReset').onclick = counter.reset.bind(counter);
 
     document.getElementById('formOk').onclick = sendData;
@@ -131,6 +138,18 @@ function registerButtons(){
         element.onclick = () => {
             showForm(element.attributes.value.value);
         };
+    });
+
+    document.querySelectorAll('*.deleteSession').forEach(element => {
+        element.onclick = () => {
+            deleteEntity('session', element.attributes.value.value);
+        }
+    });
+
+    document.querySelectorAll('*.deleteQuestion').forEach(element => {
+        element.onclick = () => {
+            deleteEntity('question', element.attributes.value.value);
+        }
     });
 
     document.querySelectorAll('tr:not(:first-child)').forEach(element => {
@@ -180,7 +199,7 @@ function showForm(questionId){
     var content = document.getElementById('question');
     var answerRating = document.getElementById('answerrating');
     document.getElementById('input_id').value = questionId;
-    if (questionId < 0){
+    if (questionId == -1) {
         content.value = '';
         answerRating.value = 0;
     } else {
@@ -188,10 +207,26 @@ function showForm(questionId){
         answerRating.value = document.getElementById(`question_${questionId}_answerRating`).innerHTML;
     }
     document.getElementById('formular').style.display = 'block';
+    document.getElementById('formularCritique').style.display = 'none';
+}
+
+function showCritiqueForm(critiqueId){
+    var content = document.getElementById('critique_content');
+    var positive = document.getElementById('critique_positive');
+    document.getElementById('critique_id').value = critiqueId;
+    if (critiqueId == -1) {
+        content.value = '';
+        positive.value = 't';
+    } else {
+        content.value = '';
+        positive.value = 't';
+    }
+    document.getElementById('formular').style.display = 'none';
+    document.getElementById('formularCritique').style.display = 'block';
 }
 
 function refreshPage(){
-    window.location.href = window.location.href;
+    window.location.href = `${window.location.href.split('?')[0]}?competitorid=${IDs.competitorId}&topicid=${IDs.topicId}`;
 }
 
 /**
@@ -199,9 +234,9 @@ function refreshPage(){
  * @param {*} targetId ID of the dataset to be deleted.
  * @param {*} targetType Type can be "question" or "critique".
  */
-function deleteEntity(targetId, targetType){
+function deleteEntity(targetType, targetId){
     var request = new XMLHttpRequest();
-    request.open('DELETE', `./details/session?${targetType}Id=${targetId}`, false);
+    request.open('DELETE', `/details/session?type=${targetType}&id=${targetId}`, false);
     request.onload = refreshPage;
     request.send(null);
 }
@@ -214,11 +249,10 @@ function modifyQuestionCount(questionId, questionMod){
     request.send(null);
 }
 
-function sendSession(counter){
+function sendSession(counter, topicId){
     var time = counter.getTime();
-    console.log("Sending", time.date,time.elapsedMillis);
     var request = new XMLHttpRequest();
-    request.open('PUT' ,`/details/session?sessiondate=${time.date}&elapsedtime=${time.elapsedMillis}`, false);
+    request.open('PUT' ,`/details/session?sessiondate=${time.date}&elapsedtime=${time.elapsedMillis}&topicid=${topicId}`, false);
     request.onload = refreshPage;
     request.send(null);
 }

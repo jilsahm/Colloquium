@@ -1,6 +1,7 @@
 const Pattern = {
     ANSWER_RATING : /^([0-9]|10)$/,
     CONTENT : /^(\w|[ \.\?\-',;äöüÄÖÜß]){0,256}$/,
+    ELAPSED_TIME : /^([1-9][0-9]{0,9}|0)(\.[0-9]{1,14})?$/,
     ID : /^-?[1-9][0-9]{0,7}$/,
 
     // 00:00:00.000 - 23:59:59.999
@@ -10,7 +11,7 @@ const Pattern = {
     NAME : /^(\w|[äöüÄÖÜß]){1,64}$/,
     SESSIONSIZE : /^[1-9][0-9]{0,3}$/,
     TITLE : /^(\w|[ \.\?\-',;äöüÄÖÜß]){0,128}$/,
-    TYPE : /^(critique|question)$/
+    TYPE : /^(critique|question|session)$/
 };
 
 const Validator = {
@@ -33,6 +34,14 @@ const Validator = {
 
     isValidISO8601(dateString){
         return Pattern.ISO8601.test(dateString);
+    },
+
+    isValidSession(sessionDate, elapsedTime, topicId){
+        return Pattern.ISO8601.test(sessionDate) && Pattern.ELAPSED_TIME.test(elapsedTime) && Pattern.ID.test(topicId);
+    },
+
+    isValidType(type){
+        return Pattern.TYPE.test(type);
     }
 
 };

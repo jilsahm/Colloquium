@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Topic (
 CREATE TABLE IF NOT EXISTS Session (
     SessionID SERIAL,
     SessionDate VARCHAR(32),
-    Endtime BIGINT,
+    ElapsedTime BIGINT,
     TopicID INTEGER,    
     PRIMARY KEY (SessionID),
     FOREIGN KEY (TopicID) REFERENCES Topic(TopicID)    
@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS Question (
 CREATE TABLE IF NOT EXISTS Critique (
     CritiqueID SERIAL,
     Content VARCHAR(256),
+    Positive BOOLEAN,
     SessionID INTEGER,
     PRIMARY KEY (CritiqueID),
     FOREIGN KEY (SessionID) REFERENCES Session(SessionID)
