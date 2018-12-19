@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS Topic (
     CompetitorID INTEGER,
     SessionSizeID INTEGER,
     PRIMARY KEY (TopicID),
-    FOREIGN KEY (CompetitorID) REFERENCES Competitor(CompetitorID),
-    FOREIGN KEY (SessionSizeID) REFERENCES SessionSize(SessionSizeID)
+    FOREIGN KEY (CompetitorID) REFERENCES Competitor(CompetitorID) ON DELETE CASCADE,
+    FOREIGN KEY (SessionSizeID) REFERENCES SessionSize(SessionSizeID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Session (
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS Session (
     ElapsedTime BIGINT,
     TopicID INTEGER,    
     PRIMARY KEY (SessionID),
-    FOREIGN KEY (TopicID) REFERENCES Topic(TopicID)    
+    FOREIGN KEY (TopicID) REFERENCES Topic(TopicID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Question (
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS Question (
     AnswerRating INTEGER,
     TopicID INTEGER,
     PRIMARY KEY (QuestionID),
-    FOREIGN KEY (TopicID) REFERENCES Topic(TopicID)
+    FOREIGN KEY (TopicID) REFERENCES Topic(TopicID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Critique (
@@ -53,5 +53,5 @@ CREATE TABLE IF NOT EXISTS Critique (
     Positive BOOLEAN,
     SessionID INTEGER,
     PRIMARY KEY (CritiqueID),
-    FOREIGN KEY (SessionID) REFERENCES Session(SessionID)
+    FOREIGN KEY (SessionID) REFERENCES Session(SessionID) ON DELETE CASCADE
 );

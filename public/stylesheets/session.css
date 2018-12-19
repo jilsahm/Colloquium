@@ -29,7 +29,19 @@
     width: 80%;
 }
 .critique{
-    grid-column: span 3;
+    grid-column: 1 /span 2;
+}
+.critiqueButtons{
+    grid-column: 3;
+    text-align: right;
+}
+.critiquePositive:hover, .critiquePositive{
+    color: var(--fgAccent) !important;
+    background: inherit !important;
+    cursor: auto !important;
+}
+.critique, .critiqueButtons{
+    padding: 0 12px;
 }
 .duration{
     grid-column: 2;
@@ -39,7 +51,7 @@
     background: var(--bgComponent);
     display: grid;
     /*grid-template-columns: 47% 47% 6%;*/
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto 180px 90px;
     width: 98%;
     margin: auto auto 8px auto;
 }
@@ -68,8 +80,6 @@
 }
 aside {
     border-bottom: var(--borderAccent);
-}
-aside, .critique{
     padding: 12px;
 }
 aside > i{

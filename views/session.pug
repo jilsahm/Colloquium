@@ -54,29 +54,31 @@ block content
                         aside.date= `Session ${counter} from ${session.sessionDate}`
                         aside.duration= `Duration: ${session.printDuration()}`
                         aside.textAlignRight
+                            i.fas.fa-plus-square.showCritiqueForm(session=session.id, value='-1')
                             i.fas.fa-trash-alt.deleteSession(value=session.id)
                         if session.critiques
                             each critique in session.critiques
+                                - var positive = (critique.positive) ? 't' : 'f'
                                 div.critique
-                                    div.critiquePositive(id=`critique_${critique.id}_positive`)= critique.positive
-                                    div.critiqueContent(id=`critique_${critique.id}_content`)= critique.content
+                                    i.fas.fa-thumbs-down.critiquePositive(id=`critique_${critique.id}_positive`, value=positive)
+                                    span.critiqueContent(id=`critique_${critique.id}_content`)= critique.content
                                 div.buttonGroup.critiqueButtons
-                                    i.fas.fa-pencil-alt.showCritiqueForm(value=critique.id)
+                                    i.fas.fa-pencil-alt.showCritiqueForm(session=session.id, value=critique.id)
                                     i.fas.fa-trash-alt.deleteCritique(value=critique.id)
                     - counter++
             div.formular#formularCritique                    
                 form(action="/details/session", method="POST")
                     input.hidden(id="critique_send",type="submit")
                     input.hidden(id="critique_id", type="number", name="critiqueid", value='-1')
-                    input.hidden(id="competitor_id", type="number", name="competitorid", value=competitor.id)
-                    input.hidden(id="topic_id", type="number", name="topicid", value=topic.id)
-                    input.hidden(id="session_id", type="number", name="sessionid", value='-1')
+                    input.hidden(id="critique_competitor_id", type="number", name="competitorid", value=competitor.id)
+                    input.hidden(id="critique_topic_id", type="number", name="topicid", value=topic.id)
+                    input.hidden(id="critique_session_id", type="number", name="sessionid", value='-1')
                     div
                         label(for="critique_content") Content
                         input(id="critique_content", type="text", name="content", value='')
                     div
                         label(for="critique_positive") Positive
-                        select(id="critique_positive", type="text", name="answerrating")
+                        select(id="critique_positive", type="text", name="positive")
                             option(value='t') Yes
                             option(value='f') No
                 div.buttongroup
@@ -94,8 +96,8 @@ block content
                         tr
                             td(id=`question_${question.id}_content`)= question.content
                             td= question.timesAsked
-                                i.fas.fa-angle-double-up(value=1)
-                                i.fas.fa-angle-double-down(value=-1)
+                                i.fas.fa-angle-double-up(question=question.id, value=1)
+                                i.fas.fa-angle-double-down(question=question.id, value=-1)
                             td(id=`question_${question.id}_answerRating`)= question.answerRating
                             td
                                 i.fas.fa-pencil-alt.showForm(value=question.id)

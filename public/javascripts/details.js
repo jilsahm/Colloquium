@@ -26,6 +26,12 @@ function registerButtons(){
             showSessions(competitorId, element.attributes.value.value);
         };
     });
+
+    document.querySelectorAll('*.deleteTopic').forEach(element => {
+        element.onclick = () => {
+            deleteTopic(element.attributes.value.value);
+        };
+    });
 }
 
 function sendData(){
@@ -60,4 +66,18 @@ function showSessions(competitorId, topicId){
     if (Pattern.ID.test(competitorId) && Pattern.ID.test(topicId) && competitorId > 0 && topicId > 0){
         window.open(`/details/session?competitorid=${competitorId}&topicid=${topicId}`, '_self');
     }
+}
+
+function deleteTopic(topicId){
+    if (Pattern.ID.test(topicId)){
+        var request = new XMLHttpRequest();
+        request.open('DELETE', `/details?topicid=${topicId}`, false);
+        request.onload = refreshPage;
+        request.send(null);       
+    }    
+}
+
+function refreshPage(){
+    const competitorId = document.getElementById('competitor_id').value;
+    window.location.href = `${window.location.href.split('?')[0]}?competitorid=${competitorId}`;
 }

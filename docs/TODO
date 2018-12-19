@@ -3,10 +3,13 @@ Sessionview
 ✔ Updating Questions @done(18-12-18 15:16)
 ✔ Deleting Questions @done(18-12-18 14:57)
 ✔ Swaping dummy questions with real ones in the POST method @done(18-12-15 23:17)
-☐ Creating Critiques
-☐ Updating Critiques
-☐ Deleting Critiques
-☐ Swaping dummy critiques with real ones in the POST method
+☐ Avoid the posibility that question count an be less then 0
+✔ Creating Critiques @done(18-12-19 11:11)
+✔ Updating Critiques @done(18-12-19 11:11)
+✔ Deleting Critiques @done(18-12-19 11:11)
+✔ Swaping dummy critiques with real ones in the POST method @done(18-12-19 11:11)
+✔ Rework the critiques list for each session @done(18-12-19 11:11)
+☐ Correct choosing thumbs-up and thumbs-down icon
 ✔ Building the session simulation @done(18-12-17 17:18)
 ✔ Transfer session to server @done(18-12-17 17:18)
 ✔ Save session to database @done(18-12-18 14:57)
@@ -15,6 +18,9 @@ Sessionview
 
 Database
 ☐ Cascading deletions
+    ✔ Session -> Critiques @done(18-12-19 11:18)
+    ✔ Topic -> Questions & Sessions -> Critiques @done(18-12-19 12:24)
+    ✔ Competitor -> Topics -> Questions & Sessions -> Critiques @done(18-12-19 12:24)
 ☐ Build session size management
 ✔ Alter session erd @done(18-12-17 17:19)
 

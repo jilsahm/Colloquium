@@ -7,6 +7,7 @@ var IDs = {
 const Pattern = {
     ID : /^-?[1-9][0-9]{0,7}$/,
     CONTENT : /^\w{0,256}$/,
+    BOOLEAN : /^[tfyn01]$/,
     RATING : /^([0-9]|10)$/
 };
 
@@ -132,12 +133,27 @@ function registerButtons(){
     document.getElementById('sessionReset').onclick = counter.reset.bind(counter);
 
     document.getElementById('formOk').onclick = sendData;
-    document.getElementById('formCancel').onclick = hideForm;    
+    document.getElementById('formCancel').onclick = hideForm;  
+    
+    document.getElementById('formCritiqueOk').onclick = sendCritiqueData;
+    document.getElementById('formCritiqueCancel').onclick = hideForm; 
     
     document.querySelectorAll('*.showForm').forEach(element => {
         element.onclick = () => {
             showForm(element.attributes.value.value);
         };
+    });
+
+    document.querySelectorAll('*.showCritiqueForm').forEach(element => {
+        element.onclick = () => {
+            showCritiqueForm(element.attributes.value.value, element.attributes.session.value);
+        };
+    });
+
+    document.querySelectorAll('*.deleteCritique').forEach(element => {
+        element.onclick = () => {
+            deleteEntity('critique', element.attributes.value.value);
+        }
     });
 
     document.querySelectorAll('*.deleteSession').forEach(element => {
@@ -166,33 +182,47 @@ function registerButtons(){
         };
     });
 
-    document.querySelectorAll('i[class^=fa-angle]').forEach(element => {
+    document.querySelectorAll("i[class^='fas fa-angle']").forEach(element => {
+        console.log(element);
         element.onclick = function(){
-            // TODO
-            modifyQuestionCount(/* TODO */ element.attributes.value.value);
+            modifyQuestionCount(element.attributes.question.value , element.attributes.value.value);
         }
     });
 }
 
 function sendData(){
-    //TODO
     var id = document.getElementById('input_id').attributes.value.value;
     var content = document.getElementById('question').attributes.value.value;
     var answerRating = document.getElementById('answerrating').attributes.value.value;
     var topicId = document.getElementById('topic_id').attributes.value.value;
 
-    console.log(id, content, answerRating, topicId);
-
     if (Pattern.ID.test(id) && Pattern.ID.test(topicId) && Pattern.CONTENT.test(content) && Pattern.RATING.test(answerRating)){
         document.getElementById('input_send').click();
     } else {
-        document.getElementById('info').innerHTML = 'Something is wrong....';
+        document.getElementById('info').innerHTML = 'Something is wrong...';
+    }
+}
+
+function sendCritiqueData(){
+    var id = document.getElementById('critique_id').attributes.value.value;
+    var content = document.getElementById('critique_content').attributes.value.value;
+    var positive = document.getElementById('critique_positive').value;
+    var sessionId = document.getElementById('critique_session_id').attributes.value.value;
+    var topicId = document.getElementById('critique_topic_id').attributes.value.value;
+    var competitorId = document.getElementById('critique_competitor_id').attributes.value.value;
+
+    if (Pattern.ID.test(id) && Pattern.ID.test(sessionId) && Pattern.ID.test(competitorId) && Pattern.ID.test(topicId)  && Pattern.CONTENT.test(content) && Pattern.BOOLEAN.test(positive)){
+        document.getElementById('critique_send').click();
+    } else {
+        document.getElementById('critiqueInfo').innerHTML = 'Something is wrong...';
     }
 }
 
 function hideForm(){
     document.getElementById('formular').style.display = 'none';
+    document.getElementById('formularCritique').style.display = 'none';
     document.getElementById('info').innerHTML = '';
+    document.getElementById('critiqueInfo').innerHTML = '';
 }
 
 function showForm(questionId){
@@ -210,16 +240,17 @@ function showForm(questionId){
     document.getElementById('formularCritique').style.display = 'none';
 }
 
-function showCritiqueForm(critiqueId){
+function showCritiqueForm(critiqueId, sessionId){
     var content = document.getElementById('critique_content');
     var positive = document.getElementById('critique_positive');
     document.getElementById('critique_id').value = critiqueId;
+    document.getElementById('critique_session_id').value = sessionId;
     if (critiqueId == -1) {
         content.value = '';
         positive.value = 't';
     } else {
-        content.value = '';
-        positive.value = 't';
+        content.value = document.getElementById(`critique_${critiqueId}_content`).innerHTML;
+        positive.value = document.getElementById(`critique_${critiqueId}_positive`).attributes.value.value;
     }
     document.getElementById('formular').style.display = 'none';
     document.getElementById('formularCritique').style.display = 'block';

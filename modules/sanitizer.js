@@ -1,5 +1,6 @@
 const Pattern = {
     ANSWER_RATING : /^([0-9]|10)$/,
+    BOOLEAN : /^([tfyn01]|true|false|yes|no|on|off)$/,
     CONTENT : /^(\w|[ \.\?\-',;äöüÄÖÜß]){0,256}$/,
     ELAPSED_TIME : /^([1-9][0-9]{0,9}|0)(\.[0-9]{1,14})?$/,
     ID : /^-?[1-9][0-9]{0,7}$/,
@@ -42,6 +43,10 @@ const Validator = {
 
     isValidType(type){
         return Pattern.TYPE.test(type);
+    },
+
+    isValidCritique(critiqueId, content, positive, sessionId){
+        return Pattern.ID.test(critiqueId) && Pattern.CONTENT.test(content) && Pattern.BOOLEAN.test(positive) && Pattern.ID.test(sessionId);
     }
 
 };

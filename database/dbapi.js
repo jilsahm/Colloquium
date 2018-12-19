@@ -349,7 +349,7 @@ const dbApi = {
                 factory = factoryCompetitor;
                 break;
             case 'critique':
-                query = 'SELECT * FROM Critique';
+                query = 'SELECT * FROM Critique WHERE SessionID=$1';
                 factory = factoryCritique;
                 break;
             case 'question':
@@ -460,6 +460,9 @@ const dbApi = {
                 case 'session':
                     query = 'DELETE FROM Session WHERE SessionID = $1';
                     break;
+                case 'topic':
+                    query = 'DELETE FROM Topic WHERE TopicID = $1';
+                    break;
             }
             if (query) {
                 pool.query(query, [id]).catch(error => console.log(error));
@@ -475,7 +478,15 @@ const dbApi = {
         var query = undefined;
 
         switch (type){
-            // TODO
+            case 'critique':
+                query = 'DELETE FROM Critique WHERE SessionID=$1';
+                break;
+            case 'session':
+                query = 'DELETE FROM Session WHERE TopicID = $1';
+                break;
+        }
+        if (query){
+            pool.query(query, [specifier]).catch(error => console.log(error));
         }
     },
 
@@ -563,40 +574,6 @@ const dbApi = {
         } else {
             const query = `DELETE FROM Competitor WHERE CompetitorID=$1`;
             pool.query(query, [competitor])
-                .catch(error => console.log(error));
-        }         
-    },
-
-    // Topic CRUD
-
-    createTopic : async function(topic, title, competitorId, sessionSize){
-        if (title && competitorId){
-            topic = new Topic(topic, title, competitorId, sessionSize);
-        }
-
-        const query = topic.create();
-        pool.query(query.sql, query.params)
-            .catch(error => console.log(error));
-    },
-
-    updateTopic : async function(topic, title, competitorId, sessionSize){
-        if (title && competitorId){
-            topic = new Topic(topic, title, competitorId, sessionSize);
-        }
-
-        const query = topic.update();
-        pool.query(query.sql, query.params)
-            .catch(error => console.log(error));
-    },
-
-    deleteTopic : async function(topic){        
-        if (topic.delete){
-            const query = topic.delete();
-            pool.query(query.sql, query.params)
-                .catch(error => console.log(error));
-        } else {
-            const query = `DELETE FROM Topic WHERE TopicID=$1`;
-            pool.query(query, [topic])
                 .catch(error => console.log(error));
         }         
     }

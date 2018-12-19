@@ -36,7 +36,7 @@ router.post('/', /*sessionChecker,*/ async function(req, res, next) {
         if (topicId == -1){
             await dbApi.create("topic", [topicId, title, competitorId, sessionSize]);
         } else {
-            await dbApi.updateTopic(topicId, title, competitorId, sessionSize);
+            await dbApi.update("topic", [topicId, title, competitorId, sessionSize]);
         }
     }
     renderDetails(competitorId, res);
@@ -46,7 +46,7 @@ router.delete('/', /*sessionChecker,*/ async function(req, res, next) {
     const id = req.query.topicid;
 
     if (id && sanitizer.isValidId(id)){
-        await dbApi.deleteTopic(id);
+        await dbApi.deleteOne('topic', id);
         res.sendStatus(200);
     } else {
         res.sendStatus(404);
@@ -62,6 +62,11 @@ async function renderSessions(competitorId, topicId, res){
     const minutes = await dbApi.fetchOne('sessionsize', topic.sessionSize);
     const questions = await dbApi.fetchAll('question', topicId);
     const statistic = await dbApi.fetchOne('statistics', topicId);
+
+    for (let session of sessions){
+        session.critiques = await dbApi.fetchAll('critique', session.id);
+        console.log(session.critiques)
+    }
 
     res.render('session', {
         competitor : competitor,
@@ -92,7 +97,7 @@ router.put('/session', /*sessionChecker,*/ async function(req, res, next){
         const questionMod = req.query.mod;
 
         if (sanitizer.isValidId(questionId) && sanitizer.isValidId(questionMod)){
-            dbApi.modifyQuestionCount();
+            dbApi.modifyQuestionCount(questionId, questionMod);
         }
     } else {
         const sessionDate = req.query.sessiondate;
@@ -107,19 +112,37 @@ router.put('/session', /*sessionChecker,*/ async function(req, res, next){
 });
 
 router.post('/session', /*sessionChecker,*/ async function(req, res, next){
-    const questionId = req.body.questionid;
+    console.log(req.body);
     const competitorId = req.body.competitorid;
     const topicId = req.body.topicid;
-    const question = req.body.question;
-    const answerRating = req.body.answerrating;
 
-    if (sanitizer.isValidQuestion(questionId, question, answerRating, topicId)){
-        if (-1 == questionId){
-            dbApi.create('question', [questionId, question, answerRating, topicId]);
-        } else {
-            dbApi.update('question', [questionId, question, answerRating]);
+    if (req.body.critiqueid){
+        const critiqueId = req.body.critiqueid;
+        const sessionId = req.body.sessionid;
+        const content = req.body.content;
+        const positive = req.body.positive;
+
+        if (sanitizer.isValidCritique(critiqueId, content, positive, sessionId)){
+            if (-1 == critiqueId){
+                dbApi.create('critique', [critiqueId, content, positive, sessionId]);
+            } else {
+                dbApi.create('critique', [critiqueId, content, positive]);
+            }
+        }
+    } else {
+        const questionId = req.body.questionid;    
+        const question = req.body.question;
+        const answerRating = req.body.answerrating;
+    
+        if (sanitizer.isValidQuestion(questionId, question, answerRating, topicId)){
+            if (-1 == questionId){
+                dbApi.create('question', [questionId, question, answerRating, topicId]);
+            } else {
+                dbApi.update('question', [questionId, question, answerRating]);
+            }
         }
     }
+    
     renderSessions(competitorId, topicId, res);
 });
 
