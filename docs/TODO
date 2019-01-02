@@ -1,23 +1,27 @@
+Views
+☐ The HTML templates must render after all database operations are done. Currently sometimes the sites are rendered before. This results in website shown not up to date. 
+
 Sessionview
 ✔ Creating Questions @done(18-12-15 23:17)
 ✔ Updating Questions @done(18-12-18 15:16)
 ✔ Deleting Questions @done(18-12-18 14:57)
 ✔ Swaping dummy questions with real ones in the POST method @done(18-12-15 23:17)
-☐ Avoid the posibility that question count an be less then 0
+☐ Avoid the posibility that question count can be less then 0
 ✔ Creating Critiques @done(18-12-19 11:11)
 ✔ Updating Critiques @done(18-12-19 11:11)
 ✔ Deleting Critiques @done(18-12-19 11:11)
 ✔ Swaping dummy critiques with real ones in the POST method @done(18-12-19 11:11)
 ✔ Rework the critiques list for each session @done(18-12-19 11:11)
-☐ Correct choosing thumbs-up and thumbs-down icon
+✔ Correct choosing thumbs-up and thumbs-down icon @done(19-01-02 13:05)
 ✔ Building the session simulation @done(18-12-17 17:18)
 ✔ Transfer session to server @done(18-12-17 17:18)
 ✔ Save session to database @done(18-12-18 14:57)
 ✔ Swaping dummy sessions with real ones @done(18-12-18 14:57)
 ✔ Add delete option for sessions @done(18-12-18 14:57)
+✔ Remove anoying count flickering which appeares each time the counter overflows @done(19-01-02 13:26)
 
 Database
-☐ Cascading deletions
+✔ Cascading deletions @done(19-01-02 12:54)
     ✔ Session -> Critiques @done(18-12-19 11:18)
     ✔ Topic -> Questions & Sessions -> Critiques @done(18-12-19 12:24)
     ✔ Competitor -> Topics -> Questions & Sessions -> Critiques @done(18-12-19 12:24)
@@ -34,4 +38,4 @@ Security
 
 Unit Tests
 ✔ Build them... @done(18-12-15 21:01)
-☐ Increasing coverage
+☐ Increase coverage

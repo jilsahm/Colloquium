@@ -59,8 +59,9 @@ block content
                         if session.critiques
                             each critique in session.critiques
                                 - var positive = (critique.positive) ? 't' : 'f'
+                                - var thumbIcon = (critique.positive) ? "fa-thumbs-up" : "fa-thumbs-down"
                                 div.critique
-                                    i.fas.fa-thumbs-down.critiquePositive(id=`critique_${critique.id}_positive`, value=positive)
+                                    i.fas.critiquePositive(id=`critique_${critique.id}_positive`, class=thumbIcon, value=positive)
                                     span.critiqueContent(id=`critique_${critique.id}_content`)= critique.content
                                 div.buttonGroup.critiqueButtons
                                     i.fas.fa-pencil-alt.showCritiqueForm(session=session.id, value=critique.id)

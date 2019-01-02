@@ -19,10 +19,10 @@ class Clock{
     }
     nextMinute(){
         this.minutes++;
-        this.seconds -= 60;
+        this.seconds = 0;
     }
     hasOverflow(){
-        return this.seconds >= 60.0;
+        return this.seconds >= 60;
     }
     reset(){
         this.seconds = 0;
@@ -30,9 +30,9 @@ class Clock{
         this.elapsedMillis = 0;
     }
     toString(){
-        let secondPrefix = (this.seconds < 10) ? '0' : '';
-        let minutePrefix = (this.minutes < 10) ? '0' : '';
         let roundedSeconds = parseFloat(this.seconds).toFixed(1);
+        let secondPrefix = (roundedSeconds < 10) ? '0' : '';
+        let minutePrefix = (this.minutes < 10) ? '0' : '';        
         return `${minutePrefix}${this.minutes}:${secondPrefix}${roundedSeconds}`;
     }
 }
